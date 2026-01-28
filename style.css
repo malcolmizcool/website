@@ -1,20 +1,4 @@
-body.dark-theme {
-    background-color: black;
-}
-
-body.dark-theme h1 {
-    color: white;
-}
-
-body.dark-theme p {
-    color: green;
-}
-
-body.dark-theme h3 {
-    color: aqua;
-}
-
 h1{
-    text-shadow: 5px 5px 5px grey;
+    text-shadow: 5px 5px 6px grey;
 }
 
