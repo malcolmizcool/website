@@ -2,3 +2,59 @@ h1{
     text-shadow: 5px 5px 6px grey;
 }
 
+.widget {
+    border-style: solid;
+    border-radius: 10px;
+    padding: 10px;
+    width: 250px;
+    height: 250px;
+    text-align: center;
+}
+
+.widget.up {
+    border-color: rgb(19, 72, 93);
+    background-color: rgb(10, 147, 150);
+}
+
+.widget.down {
+    border-color: rgb(155, 34, 38);
+    background-color: rgb(174, 32, 18);
+}
+
+.widget.lim {
+    border-color: rgb(196, 145, 75);
+    background-color: rgb(238, 155, 0);
+}
+
+.widget.main {
+    border-color: rgb(9, 8, 7);
+    background-color: rgb(103, 100, 95);
+}
+
+.widget-title {
+    font-size: 30px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 250px);
+    gap: 35px;
+}
+
+.widget-status {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.widget-maintenance {
+    margin-top: 15px;
+    font-size: 14px;
+    display: none;
+}
+
+
+.widget.main .widget-maintenance, .widget.down, .widget-maintenance, .widget.lim, .widget.widget-maintenance{
+    display: block;
+}
+
