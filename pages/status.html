@@ -3,10 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Status</title>
+    <link rel="icon" href="../images/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../images/icon.png" type="image/png">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    there is nothing here yet! <br>
-    <a href="index.html">return home</a>
+    <h1>Malcolm's Website</h1>
+    <a href="../index.html"><button>Home</button></a> <a href="/pages/status.html"> <button>Status</button></a> <a href="/pages/blog.html"><button>Blog</button></a>
+    <a href="/pages/empty.html"><button>Guest Book</button></a><a href="/pages/empty.html"><button>Games</button></a>
+    <a href="/pages/empty.html"><button>Links</button></a> <a href="/pages/faqs.html"><button>FAQs</button></a>
+    <hr>
+    <h3>About</h3>
+    <p>This page shows the current status of some services provided by the server. If a service is down but marked here as up, or if something isn’t working as expected, please report it <a href="empty.html">here</a>.
+    <br> Service statuses are not updated in real time (yet), so please allow time for changes to appear.
+    </p>
+    <div class="dashboard">
+    <div class="widget up">
+        <div class="widget-title">JELLYFIN IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+            <!--maintenance message goes here-->
+        </div>
+    </div>
+
+    <div class="widget down">
+        <div class="widget-title">MINECRAFT IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+            Emergency maintenance: ETA tonight
+        </div>
+    </div>
+
+    <div class="widget up">
+        <div class="widget-title">JELLYSEERR IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+
+        </div>
+    </div>
+
+    <div class="widget up">
+        <div class="widget-title">RADARR IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+
+        </div>
+    </div>
+
+        <div class="widget up">
+        <div class="widget-title">SONARR IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+        </div>
+    </div>
+
+        <div class="widget up">
+        <div class="widget-title">PROWLARR IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+        </div>
+    </div>
+
+    </div>
+
+
+
+    <script>
+        document.querySelectorAll(".widget").forEach(widget => {
+            const statusEl = widget.querySelector(".widget-status");
+
+            if (widget.classList.contains("up")) {
+                statusEl.textContent = "UP";
+            } else if (widget.classList.contains("down")) {
+                statusEl.textContent = "DOWN";
+            } else if (widget.classList.contains("lim")) {
+                statusEl.textContent = "LIMITED";
+            } else if (widget.classList.contains("main")) {
+                statusEl.textContent = "UNDERGOING MAINTENANCE";
+            }
+        });
+    </script>
+
+
 </body>
 </html>
+
+<!--
+widget scaffold:
+    <div class="widget up">
+        <div class="widget-title">NAME IS:</div>
+        <div class="widget-status"></div>
+        <div class="widget-maintenance">
+        </div>
+    </div>
+-->
