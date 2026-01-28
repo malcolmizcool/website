@@ -36,9 +36,11 @@ h1{
 }
 
 .dashboard {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     grid-template-columns: repeat(3, 250px);
     gap: 35px;
+    justify-content: center;
 }
 
 .widget-status {
