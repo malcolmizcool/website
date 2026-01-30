@@ -60,3 +60,7 @@ h1{
     display: block;
 }
 
+.buttonthing {
+    cursor: pointer;
+}
+
