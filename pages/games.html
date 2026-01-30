@@ -9,22 +9,33 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <h1>Malcolm's Website</h1>
-    <a href="../index.html"><button>Home</button></a> <a href="/pages/status.html"> <button>Status</button></a> <a href="/pages/blog.html"><button>Blog</button></a>
-    <a href="/pages/empty.html"><button>Guest Book</button></a><a href="/pages/games.html"><button>Games</button></a>
-    <a href="/pages/empty.html"><button>Links</button></a> <a href="/pages/faqs.html"><button>FAQs</button></a>
-    <hr>
+    <div id="cheading"></div>
     <h3>About</h3>
     Welcome to games! Here are some game projects that I am working on. Don't expect everything to be polished and nice, this is just for fun. 
     <hr>
-    <b>There is nothing here yet... please check back later</b>
+    <b>JavaScript button testing</b>
+
     <br>
     <label  id="counter">0</label> <br>
     <button class="buttonthing" id="dec">Decrease</button>
     <button class="buttonthing" id="reset">Reset</button>
     <button class="buttonthing" id="inc">Increase</button>
+    <hr>
+    <b>Guessing Game</b> <br>
+    Guess a number between 0 and 100! <br>
+
+    <input id="guessingGameInput"> <button type="submit" id="submitButton">Submit</button> <br>
+
+    <span id="result"></span>
     
 
     <script src="../index.js"></script>
+    <script>
+        fetch("../banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
+    </script>
 </body>
 </html>

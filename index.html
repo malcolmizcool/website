@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="heading"><h1>Malcolm's Website</h1></div>
-    <a href="index.html"><button>Home</button></a> <a href="/pages/status.html"> <button>Status</button></a> <a href="/pages/blog.html"><button>Blog</button></a>
-    <a href="/pages/empty.html"><button>Guest Book</button></a><a href="/pages/games.html"><button>Games</button></a>
-    <a href="/pages/empty.html"><button>Links</button></a> <a href="/pages/faqs.html"><button>FAQs</button></a>
-    <hr>
+    <div id="cheading"></div>
     <h3>About</h3>
     <p>This is my personal website that is hosted on the server. <del>It is currently only accessible on the private network, but maybe one day I will change that...</del>
     <br>
@@ -64,10 +60,11 @@
     </p>
     <script src="index.js"></script>
     <script>
-        const toggleButton = document.getElementById('theme-toggle');
-        toggleButton.onclick = () => {
-            document.body.classList.toggle('dark-theme');
-        };
+        fetch("banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
     </script>
 </body>
 </html>
