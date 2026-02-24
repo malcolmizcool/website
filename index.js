@@ -61,3 +61,9 @@ submitButton.onclick = function(){
     console.log(guessingNumber)
 }
 
+resetButtonA.onclick = function(){
+    resultGame.textContent = ""
+    input.value = ""
+    guessingNumber = Math.floor(Math.random() * 100)
+}
+
