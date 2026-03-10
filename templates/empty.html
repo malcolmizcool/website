@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>missing :(</title>
+    <link rel="icon" href="../static/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../static/icon.png" type="image/png">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div id="cheading"></div>
+    There is nothing here yet! Please check back later.
+    <br>
+    <a href="index.html">go home</a>
+    <br>
+    <img src="../static/pickles.png" height="300">
+    <br> (pickles is sadly looking into the distance)
+    <script src="../static/index.js"></script>
+    <script>
+        fetch("../static/banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
+    </script>
+</body>
+</html>
