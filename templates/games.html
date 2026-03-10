@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games</title>
+    <link rel="icon" href="../images/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../images/icon.png" type="image/png">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div id="cheading"></div>
+    <h3>About</h3>
+    Welcome to games! Here are some game projects that I am working on. Don't expect everything to be polished and nice, this is just for fun. 
+    <hr>
+    <b>JavaScript button testing</b>
+
+    <br>
+    <label  id="counter">0</label> <br>
+    <button class="buttonthing" id="dec">Decrease</button>
+    <button class="buttonthing" id="reset">Reset</button>
+    <button class="buttonthing" id="inc">Increase</button>
+    <hr>
+    <b>Guessing Game</b> <br>
+    Guess a number between 0 and 100! <br>
+
+    <input id="guessingGameInput"> <button type="submit" id="submitButton">Submit</button><button type="reseta" id="resetButtonA">Reset</button> <br>
+
+    <span id="result"></span>
+    
+
+    <script src="../index.js"></script>
+    <script>
+        fetch("../static/banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
+    </script>
+</body>
+</html>

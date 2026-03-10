@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog</title>
+    <link rel="icon" href="../images/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="../images/icon.png" type="image/png">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div id="cheading"></div>
+    <h3>Hello!</h3>
+    <p>Welcome to my blog page! Don't expect much from here, I just added it because most personal websites seem to have one. <br> Maybe I'll write something here sometimes but don't count on it. If I find a new song that I like or decide to start a new project, perhaps I'll document that here but I can't promise that will happen too often.
+    </p>
+    <hr>
+    <p><b>No entries yet... Please check back later</b></p>
+    <script src="../static/index.js"></script>
+    <script>
+        fetch("../static/banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
+    </script>
+</body>
+</html>
