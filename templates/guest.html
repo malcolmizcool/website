@@ -10,7 +10,8 @@
 </head>
 <body>
     <div id="cheading"></div>
-    <p><a href="\sign"><button>Add your entry to the guestbook here!</button></a></p> <hr>
+    <p>Welcome to the guestbook! Feel free to add a comment or some feedback here.</p> <p>Please be nice and dont spam :)</p>
+    <p><a href="\sign"><button class="buttonthing">Add your entry to the guestbook here!</button></a></p> <hr>
     {% for entry in entries %}
         <p><b>{{ entry.name }}:</b></p> <p>{{ entry.message }}</p>
         <p>{{ entry.date }}</p>

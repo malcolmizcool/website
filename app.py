@@ -60,6 +60,8 @@ def process():
         'message': comment,
         'date': datetime.now(tz).strftime('%d/%m/%y %H:%M')
     }
+    if not name or not comment:
+        return redirect('/sign')
     entries.append(entry)
     with open('guestbook.json', 'w') as f:
         json.dump(entries, f)
