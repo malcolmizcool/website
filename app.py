@@ -15,10 +15,6 @@ def index():
 def status():
     return render_template('status.html')
 
-@app.route('/blog')
-def blog():
-    return render_template('blog.html')
-
 @app.route('/empty')
 def empty():
     return render_template('empty.html')
@@ -39,6 +35,27 @@ def sign():
 @app.route('/report')
 def report():
     return render_template('report.html')
+
+
+@app.route('/blog')
+def blog():
+    try:
+        with open('blog.json', 'r') as f:
+            blogs = json.load(f)
+    except FileNotFoundError:
+        return "error"
+    blogs.reverse()
+    return render_template('blog.html', blogs=blogs)
+
+@app.route('/blog/<id>')
+def blogpost(id):
+    try:
+        with open('blog.json', 'r') as f:
+            blogs = json.load(f)
+    except FileNotFoundError:
+        return "error"
+    post = next((p for p in blogs if p['id'] == id), None)
+    return render_template('blogpost.html', post=post)
 
 @app.route('/guest')
 def guest():
