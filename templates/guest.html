@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="icon" href="/static/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>Guest Book</title>
 </head>
 <body>
-    there is nothing here yet! <br>
-    <a href="index.html">return home</a>
+    <div id="cheading"></div>
+    <p><a href="\sign"><button>Add your entry to the guestbook here!</button></a></p>
+    {% for entry in entries %}
+        <p>{{ entry.name }} : {{ entry.message }}</p>
+        <p>{{ entry.date }}</p>
+        <hr>
+    {% endfor %}
+    <script src="../static/index.js"></script>
+    <script>
+        fetch("../static/banner.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("cheading").innerHTML = html;
+        });
+    </script>
 </body>
 </html>
