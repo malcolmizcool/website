@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect
 import json
 from datetime import datetime
+import pytz
 app = Flask(__name__)
 
 #this is a test. i want to see what happens!!!!
@@ -41,6 +42,7 @@ def guest():
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
+    entries.reverse()
     return render_template('guest.html', entries=entries)
 
 @app.route('/process', methods=['POST'])
@@ -52,11 +54,11 @@ def process():
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
-    
+    tz = pytz.timezone('Australia/Melbourne')
     entry = {
         'name': name,
         'message': comment,
-        'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        'date': datetime.now(tz).strftime('%d/%m/%y %H:%M')
     }
     entries.append(entry)
     with open('guestbook.json', 'w') as f:

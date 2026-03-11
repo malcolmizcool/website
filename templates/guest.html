@@ -12,7 +12,7 @@
     <div id="cheading"></div>
     <p><a href="\sign"><button>Add your entry to the guestbook here!</button></a></p> <hr>
     {% for entry in entries %}
-        <p>{{ entry.name }} : {{ entry.message }}</p>
+        <p><b>{{ entry.name }}:</b></p> <p>{{ entry.message }}</p>
         <p>{{ entry.date }}</p>
         <hr>
     {% endfor %}
