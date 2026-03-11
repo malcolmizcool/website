@@ -14,7 +14,10 @@
     <p>Welcome to my blog page! Don't expect much from here, I just added it because most personal websites seem to have one. <br> Maybe I'll write something here sometimes but don't count on it. If I find a new song that I like or decide to start a new project, perhaps I'll document that here but I can't promise that will happen too often.
     </p>
     <hr>
-    <p><b>No entries yet... Please check back later</b></p>
+    {% for blog in blogs %}
+        <a href="/blog/{{ blog.id }}"><b>{{ blog.date }}: </b>{{ blog.title }}</a>
+        <br>
+    {% endfor %}
     <script src="../static/index.js"></script>
     <script>
         fetch("../static/banner.html")
