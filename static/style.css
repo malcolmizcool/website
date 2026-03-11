@@ -64,3 +64,8 @@ h1{
     cursor: pointer;
 }
 
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
