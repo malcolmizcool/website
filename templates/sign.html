@@ -6,16 +6,17 @@
     <link rel="icon" href="/static/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">
     <link rel="stylesheet" href="../static/style.css">
-    <title>Guest Book</title>
+    <title>Sign the guestbook!</title>
 </head>
 <body>
     <div id="cheading"></div>
-    <p><a href="\sign"><button>Add your entry to the guestbook here!</button></a></p>
-    {% for entry in entries %}
-        <p>{{ entry.name }} : {{ entry.message }}</p>
-        <p>{{ entry.date }}</p>
-        <hr>
-    {% endfor %}
+    <form action="/process" method="post">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="message">Message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Submit">
+    </form>
     <script src="../static/index.js"></script>
     <script>
         fetch("../static/banner.html")
