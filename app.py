@@ -35,6 +35,11 @@ def games():
 def sign():
     return render_template('sign.html')
 
+
+@app.route('/report')
+def report():
+    return render_template('report.html')
+
 @app.route('/guest')
 def guest():
     try:
@@ -67,6 +72,29 @@ def process():
         json.dump(entries, f)
 
     return redirect('/guest')
+
+@app.route('/reportSubmit', methods=['POST'])
+def reportSubmit():
+
+    name = request.form['name']
+    feedback = request.form['message']
+    try:
+        with open('feedback.json', 'r') as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+    tz = pytz.timezone('Australia/Melbourne')
+    entry = {
+        'name': name,
+        'feedback': feedback,
+        'date': datetime.now(tz).strftime('%d/%m/%y %H:%M')
+    }
+    if not name or not feedback:
+        return redirect('/reportSubmit')
+    entries.append(entry)
+    with open('feedback.json', 'w') as f:
+        json.dump(entries, f)
+    return render_template('thanks.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
