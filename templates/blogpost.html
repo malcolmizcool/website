@@ -6,6 +6,14 @@
     <h3>{{ post.title}}</h3>
     {{ post.content }} <br>
     {{ post.date }}
+    {% if session.get('user') == 'malcolm' %}
+    <br>
+    <br>
+    <form action="/deleteBlogPost" method="POST">
+        <input type="hidden" name="id" value="{{ post.id }}">
+        <button type="submit" class="buttonthing">Delete</button>
+    </form>
+    {% endif %}
     <hr>
     <a href="/blog"><button class="buttonthing">Go Back</button></a>
     {% endblock %}

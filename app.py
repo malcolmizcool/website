@@ -13,7 +13,8 @@ pages = ["empty",
          "games",
          "report",
          "status",
-         "thanks"]
+         "thanks",
+         "newpost"]
 
 @app.route('/<page>')
 def catch(page):
@@ -33,7 +34,6 @@ def blog():
             blogs = json.load(f)
     except FileNotFoundError:
         return "error"
-    blogs.reverse()
     return render_template('blog.html', blogs=blogs)
 
 @app.route('/blog/<id>')
@@ -165,6 +165,40 @@ def loginAccount():
             return f"error <br> <a href={"/"}>Go Home</a>"
     except FileNotFoundError:
         return f"error <br> <a href={"/"}>Go Home</a>"
+
+@app.route('/createBlogPost', methods=['POST'])
+def createBlogPost():
+    title = request.form['title']
+    message = request.form['message']
+    date = request.form['date']
+    date = datetime.strptime(date, '%Y-%m-%d').strftime('%d/%m/%y')
+    try:
+        with open('blog.json', 'r') as f:
+            blogs = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        blogs = []
+    new_id = str(max(int(b['id']) for b in blogs) + 1) if blogs else '1'
+    blog = {
+        "id": new_id,
+        "title": title,
+        "content": message,
+        "date": date
+    }
+    blogs.insert(0, blog)
+    with open ('blog.json', 'w') as f:
+        json.dump(blogs, f)
+    return redirect('/blog')
+
+@app.route('/deleteBlogPost', methods=['POST'])
+def deleteBlogPost():
+        blogid = request.form['id']
+        with open('blog.json', 'r') as f:
+            blogs = json.load(f)
+        blogs = [b for b in blogs if b['id'] != blogid]
+        with open('blog.json', 'w') as f:
+            json.dump(blogs, f)
+        return redirect('/blog')
+
 
 @app.route('/logout')
 def logout():

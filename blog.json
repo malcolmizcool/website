@@ -1,8 +1,1 @@
-[
-    {
-        "id": "1",
-        "title": "First Blog!",
-        "content": "Today I created a backend for the website, and now there is a working blog, guest book and a feedback page. If you haven't done this yourself you dont know how cool this is lol. I am writing because i need at least one entry in the blog otherwise the entire page crashes so idk this is kinda forced im just doing this so it doesnt break. :) :)",
-        "date": "11/03/26"
-    }
-]
+[{"id": "3", "title": "this is yet another test", "content": "hopefully this works...", "date": "2026-03-13"}, {"id": "1", "title": "testing 1", "date": "11/03/26", "content": "testing again"}, {"id": "2", "title": "testing 2", "date": "10/03/26", "content": "testing again"}]
