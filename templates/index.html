@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>malcolmslab</title>
-    <link rel="icon" href="/static/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">
-    <link rel="stylesheet" href="../static/style.css">
-</head>
-<body>
-    <div id="cheading"></div>
+    {% extends "base.html" %}
+    {% block title %}Home{% endblock %}
+    {% block content %}
     <h3>About</h3>
     <p>This is my personal website that is hosted on the server. <del>It is currently only accessible on the private network, but maybe one day I will change that...</del>
     <br>
@@ -62,13 +53,4 @@
     new landing page for unfinished locations <br>
     updated status page
     </p>
-    <script src="../static/index.js"></script>
-    <script>
-        fetch("../static/banner.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("cheading").innerHTML = html;
-        });
-    </script>
-</body>
-</html>
+    {% endblock %}

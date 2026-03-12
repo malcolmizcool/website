@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post.title }}</title>
-    <link rel="icon" href="/static/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">
-    <link rel="stylesheet" href="../static/style.css">
-</head>
-<body>
-    <div id="cheading"></div>
+    {% extends "base.html" %}
+    {% block title %}Blog{% endblock %}
+    {% block content %}
 
     <hr>
     <h3>{{ post.title}}</h3>
@@ -17,13 +8,4 @@
     {{ post.date }}
     <hr>
     <a href="/blog"><button class="buttonthing">Go Back</button></a>
-    <script src="../static/index.js"></script>
-    <script>
-        fetch("../static/banner.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("cheading").innerHTML = html;
-        });
-    </script>
-</body>
-</html>
+    {% endblock %}

@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <div id="cheading"></div>
+    {% extends "base.html" %}
+    {% block content %}
     <h3>About</h3>
     <p>This page shows the current status of some services provided by the server. If a service is down but marked here as up, or if something isn’t working as expected, please report it <a href="empty.html">here</a>.
     <br> Service statuses are not updated in real time (yet), so please allow time for changes to appear.
@@ -63,7 +64,7 @@
     </div>
 
     </div>
-
+    {% endblock %}
     <script src="../index.js"></script>
     <script>
 
@@ -71,11 +72,6 @@
 
 
     <script>
-        fetch("../static/banner.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("cheading").innerHTML = html;
-        });
 
         document.querySelectorAll(".widget").forEach(widget => {
             const statusEl = widget.querySelector(".widget-status");

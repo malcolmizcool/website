@@ -1,23 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQs</title>
-    <link rel="icon" href="../static/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="../static/icon.png" type="image/png">
-    <link rel="stylesheet" href="../static/style.css">
-</head>
-<body>
-    <div id="cheading"></div>
+
+    {% extends "base.html" %}
+    {% block title %}FAQs{% endblock %}
+    {% block content %}
     <p><b>Why does this exist?</b><br>For fun!</p>
-    <script src="../index.js"></script>
-    <script>
-        fetch("../static/banner.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("cheading").innerHTML = html;
-        });
-    </script>
-</body>
-</html>
+    {% endblock %}

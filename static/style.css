@@ -64,6 +64,15 @@ h1{
     cursor: pointer;
 }
 
+.navbar {
+    display: flex;
+    justify-content: center;
+}
+.loginsign {
+    display: flex;
+    justify-content: end;
+}
+
 textarea {
     font-family: inherit;
     font-size: inherit;
