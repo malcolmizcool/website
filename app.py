@@ -1,41 +1,30 @@
 import os
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime
 import pytz
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
 
-#this is a test. i want to see what happens!!!!
+
+pages = ["empty", 
+         "faqs", 
+         "games",
+         "report",
+         "status",
+         "thanks"]
+
+@app.route('/<page>')
+def catch(page):
+    if page in pages:
+        return render_template(page + '.html')
+    return "404 not found", 404
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/status')
-def status():
-    return render_template('status.html')
-
-@app.route('/empty')
-def empty():
-    return render_template('empty.html')
-
-@app.route('/faqs')
-def faqs():
-    return render_template('faqs.html')
-
-@app.route('/games')
-def games():
-    return render_template('games.html')
-
-@app.route('/sign')
-def sign():
-    return render_template('sign.html')
-
-
-@app.route('/report')
-def report():
-    return render_template('report.html')
-
 
 @app.route('/blog')
 def blog():
@@ -112,6 +101,58 @@ def reportSubmit():
     with open('feedback.json', 'w') as f:
         json.dump(entries, f)
     return render_template('thanks.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/createAccount', methods=['POST'])
+def createAccount():
+    username = request.form['username']
+    password = request.form['password']
+    try:
+        with open('uandp.json', 'r') as f:
+            details = json.load(f)
+            for detail in details:
+                if username == detail['username']:
+                    return f"error <br> <a href={"/"}><button style={"cursor: pointer"}>Go Home</button></a>"
+    except FileNotFoundError:
+        details = []
+    
+    detail = {
+        'username': username,
+        'password': generate_password_hash(password)
+    }
+
+    if not username or not password:
+        return f"error <br> <a href={"/"}>Go Home</a>"
+    details.append(detail)
+    with open('uandp.json', 'w') as f:
+        json.dump(details, f)
+    return "account created"
+
+@app.route('/loginAccount', methods=['POST'])
+def loginAccount():
+    username = request.form['username']
+    password = request.form['password']
+    try:
+        with open('uandp.json', 'r') as f:
+            details = json.load(f)
+            for detail in details:
+                if username == detail['username'] and check_password_hash(detail['password'], password):
+                    session['user'] = username
+                    return redirect('/')
+            return f"error <br> <a href={"/"}>Go Home</a>"
+    except FileNotFoundError:
+        return f"error <br> <a href={"/"}>Go Home</a>"
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/static/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">
-    <link rel="stylesheet" href="../static/style.css">
-    <title>Guest Book</title>
-</head>
-<body>
-    <div id="cheading"></div>
+
+    {% extends "base.html" %}
+    {% block title %}Guest Book{% endblock %}
+    {% block content %}
     <p>Welcome to the guestbook! Feel free to add a comment or some feedback here.</p> <p>Please be nice and dont spam :)</p>
     <p><a href="\sign"><button class="buttonthing">Add your entry to the guestbook here!</button></a></p> <hr>
     {% for entry in entries %}
@@ -17,13 +9,4 @@
         <p>{{ entry.date }}</p>
         <hr>
     {% endfor %}
-    <script src="../static/index.js"></script>
-    <script>
-        fetch("../static/banner.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("cheading").innerHTML = html;
-        });
-    </script>
-</body>
-</html>
+    {% endblock %}
