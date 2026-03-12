@@ -53,12 +53,24 @@ def guest():
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
-    entries.reverse()
     return render_template('guest.html', entries=entries)
 
 @app.route('/sign')
 def sign():
     return render_template('sign.html')
+
+@app.route('/deleteGuestEntry', methods=['POST'])
+def deleteGuestEntry():
+    entry = request.form['index']
+    try:
+        with open('guestbook.json', 'r') as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        return f"no guestbook. <a href={"/"}><button>Return Home</button></a>"
+    del entries[int(entry)]
+    with open('guestbook.json', 'w') as f:
+        json.dump(entries, f)
+    return redirect('/guest')
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -77,7 +89,7 @@ def process():
     }
     if not name or not comment:
         return redirect('/sign')
-    entries.append(entry)
+    entries.insert(0, entry)
     with open('guestbook.json', 'w') as f:
         json.dump(entries, f)
 

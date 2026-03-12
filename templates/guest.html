@@ -7,6 +7,12 @@
     {% for entry in entries %}
         <p><b>{{ entry.name }}:</b></p> <p>{{ entry.message }}</p>
         <p>{{ entry.date }}</p>
+        {% if session['user'] == 'malcolm' %}
+        <form action="/deleteGuestEntry" method="POST">
+            <input type="hidden" name="index" value="{{ loop.index0 }}">
+            <button type="submit">Delete</button>
+        </form>
+        {% endif %}
         <hr>
     {% endfor %}
     {% endblock %}
