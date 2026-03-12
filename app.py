@@ -56,6 +56,10 @@ def guest():
     entries.reverse()
     return render_template('guest.html', entries=entries)
 
+@app.route('/sign')
+def sign():
+    return render_template('sign.html')
+
 @app.route('/process', methods=['POST'])
 def process():
     name = request.form['name']
@@ -132,7 +136,8 @@ def createAccount():
     details.append(detail)
     with open('uandp.json', 'w') as f:
         json.dump(details, f)
-    return "account created"
+    session['user'] = username
+    return redirect('/')
 
 @app.route('/loginAccount', methods=['POST'])
 def loginAccount():
