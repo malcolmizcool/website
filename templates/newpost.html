@@ -1,0 +1,21 @@
+    {% extends "base.html" %}
+    {% block title %}New Post{% endblock %}
+    {% block content %}
+    {% if session['user'] == 'malcolm' %}
+    <form action="/createBlogPost", method="POST">
+        <div>
+        <label for="title">Title:</label> <br>
+        <input type="text" id="title" name="title">
+        </div>
+        <div>
+            <label for="date">Date:</label> <br>
+            <input type="date" id="date" name="date">
+        </div>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Post" class="buttonthing">
+    </form>
+    {% else %}
+    Try <a href="/login"><button class="buttonthing">signing in</button></a> or <a href="/logout"><button class="buttonthing">switching accounts</button></a>.
+    {% endif %}
+    {% endblock %}

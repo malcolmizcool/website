@@ -10,7 +10,7 @@
         {% if session['user'] == 'malcolm' %}
         <form action="/deleteGuestEntry" method="POST">
             <input type="hidden" name="index" value="{{ loop.index0 }}">
-            <button type="submit">Delete</button>
+            <button type="submit" class="buttonthing">Delete</button>
         </form>
         {% endif %}
         <hr>
