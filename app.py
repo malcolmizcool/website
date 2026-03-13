@@ -13,6 +13,10 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
 
 
+app.register_blueprint(auth)
+app.register_blueprint(blog)
+app.register_blueprint(guest)
+
 pages = ["empty", 
          "faqs", 
          "games",
@@ -20,10 +24,6 @@ pages = ["empty",
          "status",
          "thanks",
          "newpost"]
-
-app.register_blueprint(auth)
-app.register_blueprint(blog)
-app.register_blueprint(guest)
 
 @app.route('/<page>')
 def catch(page):
@@ -59,8 +59,6 @@ def reportSubmit():
     with open('feedback.json', 'w') as f:
         json.dump(entries, f)
     return render_template('thanks.html')
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
