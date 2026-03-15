@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Blackjack{% endblock %}
+{% block content %}
+
+<h3>Blackjack - Solo</h3>
+<div class="bgame">
+    <b>Dealer's Hand:</b> <br>
+    <div style="height: 60px;">
+        {% if game['status'] == 'end' %}
+        {% for card in dealer %}
+            {{ card }}
+        {% endfor %}
+        {% endif %}
+    </div>
+    <b>Your Hand:</b> <br>
+    <div style="height: 60px;">
+    {% for card in hand %}
+        {{ card }}  
+    {% endfor %}
+    </div>
+    <div> 
+    {% if game['status'] == 'end' %}
+    <a href="/blackjack/hit"><button disabled>Hit</button></a><a href="/blackjack/end"><button disabled>Stand</button></a><a href="/blackjack/reset"><button class="buttonthing">Reset</button></a>
+    {% else %}
+    <a href="/blackjack/hit"><button class="buttonthing">Hit</button></a><a href="/blackjack/end"><button class="buttonthing">Stand</button></a><a href="/blackjack/reset"><button class="buttonthing">Reset</button></a>
+    {% endif %}
+    </div>
+    {% if game['win'] == False %}
+    You lose!
+    {% endif %}
+    {% if game['win'] == True %}
+    You Win!
+    {% endif %}
+    {% if game['win'] == 'draw' %}
+    Draw. 
+    {% endif %}
+    {% if game['win'] == 'bust' %}
+    Bust! 
+    {% endif %}
+
+</div>
+
+{% endblock %}

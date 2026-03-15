@@ -78,3 +78,13 @@ textarea {
     font-size: inherit;
 }
 
+.blackjackButtons {
+    display: flex;
+    justify-content: center; 
+}
+
+.bgame {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
