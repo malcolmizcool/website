@@ -58,7 +58,7 @@ def blackjack():
 
 @jack.route("/blackjack/solo")
 def singlejack():
-    
+    bjack = False
     if 'blackjacksolo' not in session:
         suits = ['H', 'D', 'C', 'S']
         values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
@@ -79,10 +79,11 @@ def singlejack():
         if calculate_hand(game['hand']) == 21 and len(game['hand']) == 2:
             with open('playergameinfo.json', 'r') as f:
                 players = json.load(f)
-            for player in players:
-                if player['user'] == session['user']:
-                    player['tblackjacks'] += 1
-                    break
+            if session.get('user'):
+                for player in players:
+                    if player['user'] == session['user']:
+                        player['tblackjacks'] += 1
+                        break
             with open('playergameinfo.json', 'w') as f:
                 json.dump(players, f)
         session['blackjacksolo'] = game
@@ -93,10 +94,15 @@ def singlejack():
 
 
 
+    counted_hand = calculate_hand(game['hand'])
+    if counted_hand == 20  and len(game['hand']) == 2:
+        bjack = True
 
+    print(len(game['hand']))
     formatted_hand = [format_card(c) for c in game['hand']]
     formatted_dealer = [format_card(c) for c in game['dealer_hand']]
-    return render_template("blackjacksolo.html", game=game, hand=formatted_hand, dealer=formatted_dealer)
+
+    return render_template("blackjacksolo.html", game=game, hand=formatted_hand, dealer=formatted_dealer, bjack=bjack)
 
 @jack.route("/blackjack/hit")
 def hit():
@@ -127,10 +133,11 @@ def stand():
         game['win'] = True
         with open('playergameinfo.json', 'r') as f:
             players = json.load(f)
-        for player in players:
-            if player['user'] == session['user']:
-                player['bswins'] += 1
-                break
+        if session.get('user'):
+            for player in players:
+                if player['user'] == session['user']:
+                    player['bswins'] += 1
+                    break
         with open('playergameinfo.json', 'w') as f:
             json.dump(players, f)
 
@@ -142,10 +149,11 @@ def stand():
         game['win'] = True
         with open('playergameinfo.json', 'r') as f:
             players = json.load(f)
-        for player in players:
-            if player['user'] == session['user']:
-                player['bswins'] += 1
-                break
+        if session.get('user'):
+            for player in players:
+                if player['user'] == session['user']:
+                    player['bswins'] += 1
+                    break
         with open('playergameinfo.json', 'w') as f:
             json.dump(players, f)
 
