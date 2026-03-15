@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 
 import json
 from datetime import datetime
@@ -8,6 +8,7 @@ import pytz
 from routes.auth import auth
 from routes.blog import blog
 from routes.guest import guest
+from routes.jack import jack
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
@@ -16,10 +17,10 @@ app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
 app.register_blueprint(auth)
 app.register_blueprint(blog)
 app.register_blueprint(guest)
+app.register_blueprint(jack)
 
 pages = ["empty", 
          "faqs", 
-         "games",
          "report",
          "status",
          "thanks",
@@ -36,6 +37,57 @@ def catch(page):
 def index():
     return render_template('index.html')
 
+@app.route('/games')
+def games():
+    try:
+        with open('playergameinfo.json', 'r') as f:
+            playerinfo = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        playerinfo = []
+
+    if session.get('user'):
+        if not any(p['user'] == session['user'] for p in playerinfo):
+            player = {
+                'user': session['user'],
+                'brating': 1000,
+                'bswins': 0,
+                'bmwins': 0,
+                'tblackjacks': 0
+            }
+            playerinfo.append(player)
+            with open('playergameinfo.json', 'w') as f:
+                json.dump(playerinfo, f)
+
+    return render_template('games.html')
+
+@app.route('/admin/migrate')
+def migrate_page():
+    if session.get('user') != 'malcolm':
+        return "nope"
+    return render_template('migrate.html')
+
+@app.route('/admin/migrate', methods=['POST'])
+def migrate():
+    if session.get('user') != 'malcolm':
+        return "nope"
+    newfield = request.form['newfield']
+    default_value = request.form['value']
+    
+    with open('playergameinfo.json', 'r') as f:
+        players = json.load(f)
+    
+    for player in players:
+        if newfield not in player:
+            player[newfield] = default_value
+    
+    with open('playergameinfo.json', 'w') as f:
+        json.dump(players, f)
+    
+    return f"done <a href='/'>Return home</a>"
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
 
 @app.route('/reportSubmit', methods=['POST'])
 def reportSubmit():
