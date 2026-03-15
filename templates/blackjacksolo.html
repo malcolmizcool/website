@@ -8,14 +8,16 @@
     <div style="height: 60px;">
         {% if game['status'] == 'end' %}
         {% for card in dealer %}
-            {{ card }}
+          |  {{ card }}  |
         {% endfor %}
+        {% else %}
+        |  {{ dealer[0] }} |  |  ?  |
         {% endif %}
     </div>
     <b>Your Hand:</b> <br>
     <div style="height: 60px;">
     {% for card in hand %}
-        {{ card }}  
+       | {{ card }}  |
     {% endfor %}
     </div>
     <div> 
