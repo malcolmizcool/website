@@ -37,6 +37,10 @@
     {% if game['win'] == 'bust' %}
     Bust! 
     {% endif %}
+    <br>
+    {% if bjack and game['win'] == True %}
+    Blackjack!
+    {% endif %}
 
 </div>
 
