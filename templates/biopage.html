@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+Add/change your bio here: <br> <br> <br>
+<form action="/bio/{{ session.get('user') }}/change" method="POST">
+    <label for="bio">New bio:</label>
+    <textarea type="text" id="bio" name="bio" rows="4" cols="50"></textarea> <br> <br>
+    <input type="submit" class="buttonthing">
+</form> 
+
+{% endblock %}
