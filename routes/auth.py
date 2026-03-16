@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
 
 auth = Blueprint('auth', __name__)
 
@@ -75,7 +77,8 @@ def createAccount():
         'bio': "",
         'pfp': "None",
         'role': "user",
-        'accountDate': f"{date}"
+        'accountDate': f"{date}",
+        'verified': "False"
     }
 
     if not username or not password:
@@ -108,3 +111,19 @@ def loginAccount():
 def logout():
     session.pop('user', None)
     return redirect('/')
+
+@auth.route('/profile/<username>/uploadpfp', methods=['POST'])
+def uploadpfp(username):
+    if session.get('user') != username:
+        return 'get lost'
+    
+    file = request.files['pfp']
+    
+    if file.filename == '':
+        return redirect(f'/profile/{username}')
+    
+    if file:
+        filename = f"{username}.png"
+        file.save(os.path.join('static/avatars', filename))
+    
+    return redirect(f'/profile/{username}')
