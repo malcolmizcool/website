@@ -4,7 +4,7 @@
 
 {% if session.get('user') == username %}
     <h2>Hello, <span class="role-{{ user.role }}">{{ username }}</span></h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
-    {{ user['bio'] }} <br>
+    {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
     
@@ -23,7 +23,7 @@
      <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a>
 {% else %}
     <h2><span class="role-{{ user.role }}">{{ username }}</span></h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
-    {{ user['bio'] }} <br>
+    {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
     <h3>Game Stats</h3>
