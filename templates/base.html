@@ -25,8 +25,8 @@
         <div class="loginsign">  
             {% if 'user' in session %}
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <span>{{ session['user'] }}</span>
-                    <a href="/logout"><button class="buttonthing">Logout</button></a>
+                    <span class="role-{{ session.get('role', 'user') }}">{{ session['user'] }}</span>
+                    <a href="/profile/{{ session.get('user') }}"><button class="buttonthing">Profile</button></a>
                 </div>
             {% else %}
             <a href="/login"> <button class="buttonthing">Login</button></a> <a href="/register"><button class="buttonthing">Register</button></a>

@@ -11,6 +11,50 @@ def register():
 def login():
     return render_template('login.html')
 
+@auth.route('/bio/<username>')
+def bio(username):
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    user = next((u for u in users if u['username'] == username), None)
+    if username != session.get('user'):
+        return 'get lost'
+    else:
+        return render_template('biopage.html', user=user)
+
+@auth.route('/bio/<username>/change', methods=['POST'])
+def change_bio(username):
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    if username != session.get('user'):
+        return 'get lost'
+    bio = request.form['bio']
+    for u in users:
+        if u['username'] == username:
+            u['bio'] = bio
+            break
+    with open('uandp.json', 'w') as f:
+        json.dump(users, f)
+    return redirect(f'/profile/{username}')
+
+
+@auth.route('/profile/<username>')
+def profile(username):
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    user = next((u for u in users if u['username'] == username), None)
+    if user is None:
+        return "user not found", 404
+    
+    with open('playergameinfo.json', 'r') as f:
+        game_info = json.load(f)
+    player_info = None
+    for player in game_info:
+        if player['user'] == username:
+            player_info = player
+            break
+
+    return render_template('profile.html', user=user, username=username, player=player_info)
+
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
     username = request.form['username']
@@ -26,7 +70,10 @@ def createAccount():
     
     detail = {
         'username': username,
-        'password': generate_password_hash(password)
+        'password': generate_password_hash(password),
+        'bio': "None",
+        'pfp': "None",
+        'role': "user"
     }
 
     if not username or not password:
@@ -35,6 +82,7 @@ def createAccount():
     with open('uandp.json', 'w') as f:
         json.dump(details, f)
     session['user'] = username
+    session['role'] = detail['role']
     return redirect('/')
 
 @auth.route('/loginAccount', methods=['POST'])
@@ -47,6 +95,8 @@ def loginAccount():
             for detail in details:
                 if username == detail['username'] and check_password_hash(detail['password'], password):
                     session['user'] = username
+                    session['role'] = detail['role']
+                    print(detail)
                     return redirect('/')
             return f"error <br> <a href={"/"}>Go Home</a>"
     except FileNotFoundError:
