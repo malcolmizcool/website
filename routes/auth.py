@@ -72,7 +72,7 @@ def createAccount():
     detail = {
         'username': username,
         'password': generate_password_hash(password),
-        'bio': "None",
+        'bio': "",
         'pfp': "None",
         'role': "user",
         'accountDate': f"{date}"
