@@ -92,3 +92,7 @@ textarea {
 .role-admin {
     color: red
 }
+
+a, a:visited, a:hover, a:active {
+    color: inherit;
+}
