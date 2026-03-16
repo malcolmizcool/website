@@ -95,7 +95,7 @@ def singlejack():
 
 
     counted_hand = calculate_hand(game['hand'])
-    if counted_hand == 20  and len(game['hand']) == 2:
+    if counted_hand == 21  and len(game['hand']) == 2:
         bjack = True
 
     print(len(game['hand']))
