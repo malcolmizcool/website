@@ -2,7 +2,7 @@
 {% block title %}Admin{% endblock %}
 {% block content %}
 
-{% if session.get('user') == 'malcolm' %}
+{% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
     <a href="/admin/migrategame"><button class="buttonthing">Migrate Game Player Info</button></a>
     <a href="/admin/migrateuandp"><button class="buttonthing">Migrate uandp Info</button></a>
 {% else %}
