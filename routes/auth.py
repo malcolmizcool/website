@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+from datetime import datetime
 
 auth = Blueprint('auth', __name__)
 
@@ -67,13 +68,14 @@ def createAccount():
                     return f"error <br> <a href={"/"}><button style={"cursor: pointer"}>Go Home</button></a>"
     except FileNotFoundError:
         details = []
-    
+    date = datetime.now().strftime('%d/%m/%y')
     detail = {
         'username': username,
         'password': generate_password_hash(password),
         'bio': "None",
         'pfp': "None",
-        'role': "user"
+        'role': "user",
+        'accountDate': f"{date}"
     }
 
     if not username or not password:

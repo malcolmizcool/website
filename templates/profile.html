@@ -4,7 +4,8 @@
 
 {% if session.get('user') == username %}
     <h2>Hello, <span class="role-{{ user.role }}">{{ username }}</span></h2> 
-    {{ user['bio'] }}
+    {{ user['bio'] }} <br>
+    Account created: {{ user['accountDate'] }}
     <hr>
     
     <h3>Game Stats</h3>
@@ -17,7 +18,8 @@
     <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a>
 {% else %}
     <h2><span class="role-{{ user.role }}">{{ username }}</span></h2>
-    {{ user['bio'] }}
+    {{ user['bio'] }} <br>
+    Account created: {{ user['accountDate'] }}
     <hr>
     <h3>Game Stats</h3>
     <b>Blackjack:</b> <br>
