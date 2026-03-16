@@ -60,15 +60,15 @@ def games():
 
     return render_template('games.html')
 
-@app.route('/admin/migrate')
-def migrate_page():
-    if session.get('user') != 'malcolm':
+@app.route('/admin/migrategame')
+def migrate_game():
+    if session.get('user') != 'malcolm' or 'admin':
         return "nope"
-    return render_template('migrate.html')
+    return render_template('migrategameinfo.html')
 
-@app.route('/admin/migrate', methods=['POST'])
-def migrate():
-    if session.get('user') != 'malcolm':
+@app.route('/admin/migrategame', methods=['POST'])
+def migrategame():
+    if session.get('user') != 'malcolm' or 'admin':
         return "nope"
     newfield = request.form['newfield']
     default_value = request.form['value']
@@ -81,6 +81,31 @@ def migrate():
             player[newfield] = default_value
     
     with open('playergameinfo.json', 'w') as f:
+        json.dump(players, f)
+    
+    return f"done <a href='/'>Return home</a>"
+
+@app.route('/admin/migrateuandp')
+def migrate_uandp():
+    if session.get('user') != 'malcolm' or 'admin':
+        return "nope"
+    return render_template('migrateuandp.html')
+
+@app.route('/admin/migrateuandp', methods=['POST'])
+def migrateuandp():
+    if session.get('user') != 'malcolm':
+        return "nope"
+    newfield = request.form['newfield']
+    default_value = request.form['value']
+    
+    with open('uandp.json', 'r') as f:
+        players = json.load(f)
+    
+    for player in players:
+        if newfield not in player:
+            player[newfield] = default_value
+    
+    with open('uandp.json', 'w') as f:
         json.dump(players, f)
     
     return f"done <a href='/'>Return home</a>"

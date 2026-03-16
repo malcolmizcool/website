@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ username }}'s Profile{% endblock %}
+{% block content %}
+
+{% if session.get('user') == username %}
+    <h2>Hello, <span class="role-{{ user.role }}">{{ username }}</span></h2> 
+    {{ user['bio'] }}
+    <hr>
+    
+    <h3>Game Stats</h3>
+    <b>Blackjack:</b> <br>
+    Single player wins: {{ player['bswins'] }} <br>
+    Multiplayer wins: {{ player['bmwins'] }} <br>
+    Multiplayer rating: {{ player['brating'] }} <br>
+    Blackjacks: {{ player['tblackjacks'] }} <br> <hr>
+    
+    <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a>
+{% else %}
+    <h2><span class="role-{{ user.role }}">{{ username }}</span></h2>
+    {{ user['bio'] }}
+    <hr>
+    <h3>Game Stats</h3>
+    <b>Blackjack:</b> <br>
+    Single player wins: {{ player['bswins'] }} <br>
+    Multiplayer wins: {{ player['bmwins'] }} <br>
+    Multiplayer rating: {{ player['brating'] }} <br>
+    Blackjacks: {{ player['tblackjacks'] }} <br> <hr>
+{% endif %}
+
+{% endblock %}
