@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Migrate{% endblock %}
+{% block content %}
+<form action="/admin/migrateuandp" method="POST">
+    <label for="newfield">newfield:</label>
+    <input type="text" id="newfield" name="newfield"> <br>
+    <label for="value">default value:</label>
+    <input type="text" id="value" name="value"> <br>
+    <input type="submit" class="buttonthing">
+</form>
+
+{% endblock %}
