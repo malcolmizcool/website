@@ -98,7 +98,6 @@ def singlejack():
     if counted_hand == 21  and len(game['hand']) == 2:
         bjack = True
 
-    print(len(game['hand']))
     formatted_hand = [format_card(c) for c in game['hand']]
     formatted_dealer = [format_card(c) for c in game['dealer_hand']]
 
