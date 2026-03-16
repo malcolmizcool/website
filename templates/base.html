@@ -18,7 +18,7 @@
             <a href="/"><button class="buttonthing">Home</button></a> <a href="/status"> <button class="buttonthing">Status</button></a> <a href="/blog"><button class="buttonthing">Blog</button></a>
             <a href="/guest"><button class="buttonthing" >Guest Book</button></a><a href="/games"><button class="buttonthing" >Games</button></a>
             <a href="/empty"><button class="buttonthing" >Links</button></a> <a href="/faqs"><button class="buttonthing" >FAQs</button></a>
-            {% if session['user'] == 'malcolm' %}
+            {% if session['user'] == 'malcolm' or session['user'] == 'admin'%}
             <a href="/admin"><button class="buttonthing">Admin</button></a>
             {% endif %}
         </div>
