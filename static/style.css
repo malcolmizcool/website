@@ -88,3 +88,7 @@ textarea {
     align-items: center;
     flex-direction: column;
 }
+
+.role-admin {
+    color: red
+}

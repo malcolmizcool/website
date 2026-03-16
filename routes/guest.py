@@ -12,7 +12,10 @@ def guest_page():
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
-    return render_template('guest.html', entries=entries)
+    with open('uandp.json', 'r') as f:
+        users  = json.load(f)
+    roles = {u['username']: u.get('role', 'user') for u in users}
+    return render_template('guest.html', entries=entries, users=users, roles=roles)
 
 @guest.route('/sign')
 def sign():
@@ -33,7 +36,7 @@ def deleteGuestEntry():
 
 @guest.route('/process', methods=['POST'])
 def process():
-    name = request.form['name']
+    name = session.get('user')
     comment = request.form['message']
     try:
         with open('guestbook.json', 'r') as f:
