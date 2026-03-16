@@ -11,21 +11,21 @@
   </head>
   <body>
     <div id="heading" class="navbar">
-        <h1>Malcolm's Website</h1> 
+        <a href="/"><h1>Malcolm's Website</h1></a>
     </div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <a href="/"><button class="buttonthing">Home</button></a> <a href="/status"> <button class="buttonthing">Status</button></a> <a href="/blog"><button class="buttonthing">Blog</button></a>
             <a href="/guest"><button class="buttonthing" >Guest Book</button></a><a href="/games"><button class="buttonthing" >Games</button></a>
             <a href="/empty"><button class="buttonthing" >Links</button></a> <a href="/faqs"><button class="buttonthing" >FAQs</button></a>
-            {% if session['user'] == 'malcolm' or session['user'] == 'admin'%}
+            {% if session.get('role', 'user') == 'admin' %}
             <a href="/admin"><button class="buttonthing">Admin</button></a>
             {% endif %}
         </div>
         <div class="loginsign">  
             {% if 'user' in session %}
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <span class="role-{{ session.get('role', 'user') }}">{{ session['user'] }}</span>
+                    <span class="role-{{ session.get('role', 'user') }}">{{ session['user'] }}</span> 
                     <a href="/profile/{{ session.get('user') }}"><button class="buttonthing">Profile</button></a>
                 </div>
             {% else %}
