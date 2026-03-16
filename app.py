@@ -62,13 +62,13 @@ def games():
 
 @app.route('/admin/migrategame')
 def migrate_game():
-    if session.get('user') != 'malcolm' or 'admin':
+    if session.get('user') != 'malcolm':
         return "nope"
     return render_template('migrategameinfo.html')
 
 @app.route('/admin/migrategame', methods=['POST'])
 def migrategame():
-    if session.get('user') != 'malcolm' or 'admin':
+    if session.get('user') != 'malcolm':
         return "nope"
     newfield = request.form['newfield']
     default_value = request.form['value']
@@ -87,7 +87,7 @@ def migrategame():
 
 @app.route('/admin/migrateuandp')
 def migrate_uandp():
-    if session.get('user') != 'malcolm' or 'admin':
+    if session.get('user') != 'malcolm':
         return "nope"
     return render_template('migrateuandp.html')
 
