@@ -55,7 +55,9 @@ def blackjack():
     with open('playergameinfo.json', 'r') as f:
         info = json.load(f)
     player = next((p for p in info if p['user'] == session.get('user')), None)
-    return render_template('blackjack.html', player=player, info=info)
+    leaderboard_wins = sorted(info, key=lambda p: p['bswins'], reverse=True)[:3]
+    leaderboard_blackjacks = sorted(info, key=lambda p: p['tblackjacks'], reverse=True)[:3]
+    return render_template('blackjack.html', player=player, info=info, leaderboard_blackjacks=leaderboard_blackjacks, leaderboard_wins=leaderboard_wins)
 
 @jack.route("/blackjack/solo")
 def singlejack():

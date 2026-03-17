@@ -6,7 +6,7 @@
     There aren't any rules here because you should know how to play this game lol. <br> <br>
     There are two game modes, you can play single player or multiplayer. Multiplayer is rated, while single player is not.<br>
     Instead of having a money system, rewards for wining in multiplayer come in rating points. This is because it would be no fun to run out of money, and I am not monetising this site (yet). <br>
-    <br>
+    <hr>
     <b>Your Stats:</b>
     <br>
     {% if session.get('user') %}
@@ -20,6 +20,23 @@
         <a href="/login"><button class="buttonthing">Login</button></a> for your stats.
     {% endif %}
     <br> <br>
+    <b>Leaderboard:</b> 
+   <div style="display: flex; gap: 50px;">
+
+    <div>
+    Total Solo Wins: <br>
+    {% for wins in leaderboard_wins %}
+    {{ wins['user'] }}: {{ wins['bswins'] }} <br>
+    {% endfor %}
+    </div>
+    <div>
+        Total Blackjacks: <br>
+        {% for blackjacks in leaderboard_blackjacks %}
+        {{ blackjacks['user'] }}: {{ blackjacks['tblackjacks'] }} <br>
+        {% endfor %}
+    </div>
+   </div>
+   <hr>
 
     <br>
     <br>
