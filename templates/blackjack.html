@@ -26,13 +26,13 @@
     <div>
     Total Solo Wins: <br>
     {% for wins in leaderboard_wins %}
-    {{ wins['user'] }}: {{ wins['bswins'] }} <br>
+    <span class="role-{{ players[wins['user']] }}">{{ wins['user'] }}</span>: {{ wins['bswins'] }} <br>
     {% endfor %}
     </div>
     <div>
         Total Blackjacks: <br>
         {% for blackjacks in leaderboard_blackjacks %}
-        {{ blackjacks['user'] }}: {{ blackjacks['tblackjacks'] }} <br>
+        <span class="role-{{ players[blackjacks['user']] }}">{{ blackjacks['user'] }}</span>: {{ blackjacks['tblackjacks'] }} <br>
         {% endfor %}
     </div>
    </div>

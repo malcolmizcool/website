@@ -54,10 +54,19 @@ jack = Blueprint('jack', __name__)
 def blackjack():
     with open('playergameinfo.json', 'r') as f:
         info = json.load(f)
+    with open('uandp.json', 'r') as f:
+        players = json.load(f)
+    
+    plist = {}
+    for p in players:
+            plist[p['username']] = p['role']
+
+
     player = next((p for p in info if p['user'] == session.get('user')), None)
     leaderboard_wins = sorted(info, key=lambda p: p['bswins'], reverse=True)[:3]
     leaderboard_blackjacks = sorted(info, key=lambda p: p['tblackjacks'], reverse=True)[:3]
-    return render_template('blackjack.html', player=player, info=info, leaderboard_blackjacks=leaderboard_blackjacks, leaderboard_wins=leaderboard_wins)
+
+    return render_template('blackjack.html', player=player, info=info, leaderboard_blackjacks=leaderboard_blackjacks, leaderboard_wins=leaderboard_wins, players=plist)
 
 @jack.route("/blackjack/solo")
 def singlejack():

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from werkzeug.utils import secure_filename
 from helpers import get_achievements, award_achievement
@@ -62,7 +62,9 @@ def profile(username):
     
     if session.get('user') and session['user'] != username and username == "picklez_gaming":
         award_achievement(session['user'], 'visit_pickle')
-    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist)
+    last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
+    online = datetime.now() - last_seen < timedelta(minutes=5)
+    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
@@ -84,7 +86,8 @@ def createAccount():
         'pfp': "None",
         'role': "user",
         'accountDate': f"{date}",
-        'verified': "False"
+        'verified': "False",
+        'lastSeen': datetime.now().strftime('%d/%m/%y %H:%M:%S')
     }
 
     if not username or not password:
