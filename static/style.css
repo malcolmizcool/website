@@ -96,3 +96,7 @@ textarea {
 a, a:visited, a:hover, a:active {
     color: inherit;
 }
+
+button {
+    cursor: pointer;
+}

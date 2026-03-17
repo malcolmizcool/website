@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+{% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
+    {% for f in feedback %}
+        {{ f['name'] }}: <br>
+        {{ f['feedback'] }} <br>
+        {{ f['date'] }}         
+        <form action="/admin/feedback/delete" method="POST">
+            <input type="hidden" name="index" value="{{ loop.index0 }}">
+            <button type="submit" class="buttonthing">Mark resolved</button>
+        </form>
+        <hr>
+    {% endfor %}
+{% else %}
+    You shouldn't be here!
+{% endif %}
+
+{% endblock %}

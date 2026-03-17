@@ -4,7 +4,16 @@
 
 {% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
     <a href="/admin/migrategame"><button class="buttonthing">Migrate Game Player Info</button></a>
-    <a href="/admin/migrateuandp"><button class="buttonthing">Migrate uandp Info</button></a>
+    <a href="/admin/migrateuandp"><button class="buttonthing">Migrate uandp Info</button></a> <a href="/admin/feedback"><button>Feedback</button></a>
+    <a href="/admin/users"><button>View Users</button></a> <br>
+    <br><b>Change user rank:</b>
+    <form action="/admin/userrank" method="POST">
+        <label for="user">user:</label>
+        <input type="text" id="user" name="user"> <br>
+        <label for="newrank">new rank:</label>
+        <input type="text" id="newrank" name="newrank"> <br>
+        <input type="submit" class="buttonthing">
+    </form>
 {% else %}
     You shouldn't be here!
 {% endif %}
