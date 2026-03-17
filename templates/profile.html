@@ -7,7 +7,15 @@
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
-    
+    <h3>Achievements</h3>
+    {% for achievement_id in achievements %}
+        {% for a in achievement_list %}
+            {% if a.id == achievement_id %}
+                <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.description }} <br>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <hr>
     <h3>Game Stats</h3>
     <b>Blackjack:</b> <br>
     Single player wins: {{ player['bswins'] }} <br>
@@ -25,6 +33,15 @@
     <h2><span class="role-{{ user.role }}">{{ username }}</span></h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
+    <hr>
+    <h3>Achievements</h3>
+    {% for achievement_id in achievements %}
+        {% for a in achievement_list %}
+            {% if a.id == achievement_id %}
+                <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.description }} <br>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
     <hr>
     <h3>Game Stats</h3>
     <b>Blackjack:</b> <br>

@@ -13,7 +13,27 @@
         <label for="newrank">new rank:</label>
         <input type="text" id="newrank" name="newrank"> <br>
         <input type="submit" class="buttonthing">
-    </form>
+    </form> <br>
+    <b>Add achievement:</b>
+    <form action="/admin/achievement/add" method="POST">
+        <label for="achievementid">id:</label>
+        <input type="text" id="achievementid" name="achievementid"> <br>
+        <label for="achievementname"> achievement name: </label>
+        <input type="text" id="achievementname" name="achievementname"> <br>
+        <label for="achievementdescription"> achievement description: </label>
+        <input type="text" id="achievementdescription" name="achievementdescription"> <br>
+        <label for="achievementcolour"> achievement rarity: </label>
+        <input type="text" id="achievementcolour" name="achievementcolour"> <br>
+        <input type="submit" class="buttonthing">
+    </form> <br>
+    <b>Award achievement:</b>
+    <form action="/admin/achievement/award" method="POST">
+        <label for="user">username:</label>
+        <input type="text" id="user" name="user"> <br>
+        <label for="achievementid"> achievement id: </label>
+        <input type="text" id="achievementid" name="achievementid"> <br>
+        <input type="submit" class="buttonthing">
+    </form> 
 {% else %}
     You shouldn't be here!
 {% endif %}

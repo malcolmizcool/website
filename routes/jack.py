@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 import json
 import random
+from helpers import award_achievement
 
 suit_names = {'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠'}
 value_names = {'J': 'Jack', 'Q': 'Queen', 'K': 'King', 'A': 'Ace'}
@@ -136,6 +137,8 @@ def stand():
             for player in players:
                 if player['user'] == session['user']:
                     player['bswins'] += 1
+                    if player['bswins'] == 100:
+                        award_achievement(session['user'], 'bj_100_wins')
                     break
         with open('playergameinfo.json', 'w') as f:
             json.dump(players, f)
@@ -152,12 +155,15 @@ def stand():
             for player in players:
                 if player['user'] == session['user']:
                     player['bswins'] += 1
+                    if player['bswins'] == 100:
+                        award_achievement(session['user'], 'bj_100_wins')
                     break
         with open('playergameinfo.json', 'w') as f:
             json.dump(players, f)
 
     if calculate_hand(game['dealer_hand']) == calculate_hand(game['hand']):
         game['win'] = 'draw'
+
 
     session['blackjacksolo'] = game
 

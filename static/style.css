@@ -100,3 +100,5 @@ a, a:visited, a:hover, a:active {
 button {
     cursor: pointer;
 }
+
+.rarity-common { color: blue}
