@@ -101,4 +101,11 @@ button {
     cursor: pointer;
 }
 
-.rarity-common { color: blue}
+.rarity-common { color: rgb(37, 158, 222)}
+.rarity-rare {color: rgb(121, 58, 127)}
+.rarity-uncommon { color: rgb(31, 220, 204)}
+.rarity-superrare { color: rgb(189, 75, 156);}
+.rarity-legendary { 
+    color: rgb(253, 253, 65);
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}

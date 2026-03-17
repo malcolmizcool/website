@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
-from helpers import get_achievements
+from helpers import get_achievements, award_achievement
 
 auth = Blueprint('auth', __name__)
 
@@ -59,7 +59,9 @@ def profile(username):
             break
     with open('achievement_list.json', 'r') as f:
         alist = json.load(f)
-    print(user_achievements)
+    
+    if session.get('user') and session['user'] != username and username == "picklez_gaming":
+        award_achievement(session['user'], 'visit_pickle')
     return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist)
 
 @auth.route('/createAccount', methods=['POST'])
