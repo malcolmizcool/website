@@ -6,7 +6,7 @@
     <h2>Hello, <span class="role-{{ user.role }}">{{ username }}</span>
     {% if user.role != 'user' %}
     ({{ user.role }})
-    {% endif %}
+    {% endif %}  
     </h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
@@ -35,10 +35,18 @@
      <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a>
 {% else %}
     <h2><span class="role-{{ user.role }}">{{ username }}</span>
+
     {% if user.role != 'user' %}
     ({{ user.role }})
+
+    </h2> 
+        {% endif %}
+            {% if online %}
+    <span style="color: rgb(21, 161, 49);">Online now</span> <br>
+            {% else %}
+            Last seen: {{ last_seen }} <br>
     {% endif %}
-    </h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
+    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>

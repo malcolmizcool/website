@@ -34,6 +34,17 @@ def catch(page):
         return render_template(page + '.html')
     return "404 not found", 404
 
+@app.before_request
+def update_last_seen():
+    if session.get('user'):
+        with open('uandp.json', 'r') as f:
+            users = json.load(f)
+        for user in users:
+            if user['username'] == session['user']:
+                user['lastSeen'] = datetime.now().strftime('%d/%m/%y %H:%M:%S')
+                break
+        with open('uandp.json', 'w') as f:
+            json.dump(users, f)
 
 @app.route('/')
 def index():
