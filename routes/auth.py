@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
+from helpers import get_achievements
 
 auth = Blueprint('auth', __name__)
 
@@ -48,6 +49,7 @@ def profile(username):
     if user is None:
         return "user not found", 404
     
+    user_achievements = get_achievements(username)['achievements']
     with open('playergameinfo.json', 'r') as f:
         game_info = json.load(f)
     player_info = None
@@ -55,8 +57,10 @@ def profile(username):
         if player['user'] == username:
             player_info = player
             break
-
-    return render_template('profile.html', user=user, username=username, player=player_info)
+    with open('achievement_list.json', 'r') as f:
+        alist = json.load(f)
+    print(user_achievements)
+    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
