@@ -4,11 +4,16 @@
     {% block content %}
     <h3>Feedback</h3>
     <p>If something isn't working quite right or you have some feedback, let me know here!</p> <hr>
+    
+    {% if session.get('user') %}
     <form action="/reportSubmit" method="post">
-    <label for="name">Name:</label><br>
+    <label for="name">Title:</label><br>
     <input type="text" id="name" name="name"><br>
-    <label for="message">Report an issue here:</label><br>
+    <label for="message">Description of issue:</label><br>
     <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
     <input type="submit" value="Submit" class="buttonthing">
     </form>
+    {% else %}
+    Please <a href="/login"><button>login</button></a> to leave feedback.
+    {% endif %}
     {% endblock %}
