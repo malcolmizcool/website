@@ -36,6 +36,8 @@ def catch(page):
 
 @app.before_request
 def update_last_seen():
+    if request.path.startswith('/static'):
+        return  
     if session.get('user'):
         with open('uandp.json', 'r') as f:
             users = json.load(f)
