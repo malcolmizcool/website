@@ -11,7 +11,8 @@
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
-    <h3>Achievements</h3>
+    <h3>Achievements</h3> 
+    You have unlocked {{ fraction }} ({{ percentage }}%)<br> <br>
     {% for achievement_id in achievements %}
         {% for a in achievement_list %}
             {% if a.id == achievement_id %}
@@ -32,7 +33,7 @@
     <input type="file" name="pfp" accept="image/*" > <br>
     <input type="submit" value="Upload" class="buttonthing">
     </form> <br> 
-     <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a>
+     <a href="/bio/{{ username }}"><button class="buttonthing">Edit bio</button></a><a href="/logout"><button class="buttonthing">Logout</button></a> <br>
 {% else %}
     <h2><span class="role-{{ user.role }}">{{ username }}</span>
 
@@ -52,6 +53,7 @@
     Account created: {{ user['accountDate'] }}
     <hr>
     <h3>Achievements</h3>
+    {{ username }} has unlocked {{ fraction }} ({{ percentage }}%)<br> <br>
     {% for achievement_id in achievements %}
         {% for a in achievement_list %}
             {% if a.id == achievement_id %}
