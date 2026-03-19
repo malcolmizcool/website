@@ -118,8 +118,22 @@ def award_player_achievement():
     award_achievement(user, achievement_id)
     return redirect('/admin')
 
-
-
 @admin.route('/admin')
 def admin_page():
-    return render_template('admin.html')
+    show_achievements = request.args.get('show') == 'achievements'
+    try:
+        with open('achievement_list.json', 'r') as f:
+            achievement_list = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        achievement_list = []
+    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements)
+
+@admin.route('/admin/achievement/delete', methods=['POST'])
+def delete_achievement():
+    achievement_id = request.form['id']
+    with open('achievement_list.json', 'r') as f:
+        achievements = json.load(f)
+    achievements = [a for a in achievements if a['id'] != achievement_id]
+    with open('achievement_list.json', 'w') as f:
+        json.dump(achievements, f)
+    return redirect('/admin?show=achievements')
