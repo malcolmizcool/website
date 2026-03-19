@@ -7,7 +7,7 @@
     {% if user.role != 'user' %}
     ({{ user.role }})
     {% endif %}  
-    </h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
+    </h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
@@ -47,7 +47,7 @@
             {% else %}
             Last seen: {{ last_seen }} <br>
     {% endif %}
-    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100"> <br>
+    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover;"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
