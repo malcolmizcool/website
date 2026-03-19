@@ -4,7 +4,8 @@
 
 {% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
     {% for f in feedback %}
-        {{ f['name'] }}: <br>
+        <a href="/profile/{{ f['actualname' ]}}"><span>{{ f['actualname'] }}:</span></a> <br>
+        <b>{{ f['name'] }}</b> <br>
         {{ f['feedback'] }} <br>
         {{ f['date'] }}         
         <form action="/admin/feedback/delete" method="POST">

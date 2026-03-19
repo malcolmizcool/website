@@ -110,6 +110,18 @@ def singlejack():
     if counted_hand == 21  and len(game['hand']) == 2:
         bjack = True
 
+        if session.get('user'):
+            with open('achievements.json', 'r') as f:
+                player_achievements = json.load(f)
+            with open('playergameinfo.json', 'r') as f:
+                game_info = json.load(f)
+            for entry in game_info:
+                if entry['user'] == session.get('user'):
+                    if entry['tblackjacks'] == 21:
+                        award_achievement(session['user'], '21_blackjack')
+
+
+
     formatted_hand = [format_card(c) for c in game['hand']]
     formatted_dealer = [format_card(c) for c in game['dealer_hand']]
 

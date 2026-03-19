@@ -81,6 +81,7 @@ def reportSubmit():
 
     name = request.form['name']
     feedback = request.form['message']
+    aname = session.get('user')
     try:
         with open('feedback.json', 'r') as f:
             entries = json.load(f)
@@ -90,7 +91,8 @@ def reportSubmit():
     entry = {
         'name': name,
         'feedback': feedback,
-        'date': datetime.now(tz).strftime('%d/%m/%y %H:%M')
+        'date': datetime.now(tz).strftime('%d/%m/%y %H:%M'),
+        'actualname': aname
     }
     if not name or not feedback:
         return redirect('/reportSubmit')
