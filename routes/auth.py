@@ -64,7 +64,12 @@ def profile(username):
         award_achievement(session['user'], 'visit_pickle')
     last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
     online = datetime.now() - last_seen < timedelta(minutes=5)
-    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen)
+    achieved_achievements = len(user_achievements)
+    total_achievements = len(alist)
+    fraction = f"{achieved_achievements}/{total_achievements}"
+    percentage = (achieved_achievements/total_achievements)*100
+    percentage = round(percentage, 2)
+    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
