@@ -28,7 +28,7 @@
     </form> <a href="/admin?show=achievements"><button class="buttonthing">Show Achievements</button></a><br>
     {% if show_achievements %}
     {% for a in achievement_list %}
-        {{ a.name }} — {{ a.id }} - {{ a.description }} - {{ a.rarity }} 
+        <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}
             <form action="/admin/achievement/delete" method="POST" style="display: inline;">
         <input type="hidden" name="id" value="{{ a.id }}">
         <button type="submit" class="buttonthing">Delete</button>
