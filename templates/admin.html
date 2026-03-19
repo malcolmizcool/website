@@ -25,7 +25,16 @@
         <label for="achievementcolour"> achievement rarity: </label>
         <input type="text" id="achievementcolour" name="achievementcolour"> <br>
         <input type="submit" class="buttonthing">
-    </form> <br>
+    </form> <a href="/admin?show=achievements"><button class="buttonthing">Show Achievements</button></a><br>
+    {% if show_achievements %}
+    {% for a in achievement_list %}
+        {{ a.name }} — {{ a.id }} - {{ a.description }} - {{ a.rarity }} 
+            <form action="/admin/achievement/delete" method="POST" style="display: inline;">
+        <input type="hidden" name="id" value="{{ a.id }}">
+        <button type="submit" class="buttonthing">Delete</button>
+    </form><br>
+    {% endfor %}
+{% endif %}
     <b>Award achievement:</b>
     <form action="/admin/achievement/award" method="POST">
         <label for="user">username:</label>
