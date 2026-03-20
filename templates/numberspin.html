@@ -13,11 +13,9 @@ There are two options: <br>
 If you are incorrect, you lose all points from the round. If you are unsure, you can bank your points and end the round. The aim of the game is to bank as many points as possible. <br><br>
 Good luck :)
 <hr> <br>
-<b>Your best scores:</b> <br>
-{% for entry in user_scores[:5] %}
-    {{ loop.index }}. {{ user }}: {{ entry }} <br>
-{% endfor %}
-<br>
+<b>Your stats:</b> <br>
+High score: {{ user_scores[0] }}
+<br> <br>
 <b>Leaderboard:</b> <br>
 {% for entry in list1[:5] %}
     {{ loop.index }}. {{ entry[0] }}: {{ entry[1] }} <br>
