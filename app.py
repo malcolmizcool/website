@@ -10,6 +10,7 @@ from routes.blog import blog
 from routes.guest import guest
 from routes.jack import jack
 from routes.admin import admin
+from routes.luck import luck
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
@@ -20,6 +21,7 @@ app.register_blueprint(blog)
 app.register_blueprint(guest)
 app.register_blueprint(jack)
 app.register_blueprint(admin)
+app.register_blueprint(luck)
 
 pages = ["empty", 
          "faqs", 
