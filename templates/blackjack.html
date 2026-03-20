@@ -4,16 +4,12 @@
     <h3>Blackjack</h3>
     Welcome to Blackjack! <br> 
     There aren't any rules here because you should know how to play this game lol. <br> <br>
-    There are two game modes, you can play single player or multiplayer. Multiplayer is rated, while single player is not.<br>
-    Instead of having a money system, rewards for wining in multiplayer come in rating points. This is because it would be no fun to run out of money, and I am not monetising this site (yet). <br>
     <hr>
     <b>Your Stats:</b>
     <br>
     {% if session.get('user') %}
         {% if player %}
-            Current Multiplayer Rating: {{ player.brating }} <br>
             Total Single player wins: {{ player.bswins }} <br>
-            Total Multiplayer wins: {{ player.bmwins }} <br>
             Total Blackjacks: {{ player.tblackjacks }}
         {% endif %}
     {% else %}
