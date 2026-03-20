@@ -31,6 +31,9 @@ def spin():
 
         session.modified = True
         return chosen_number
+    else:
+        session['spinsolo']['state'] = 'win'
+        session.modified = True
 
 
 @luck.route('/numberspin')
@@ -76,6 +79,8 @@ def solo():
 def higher():
     pnumber = session['spinsolo']['chosen_number']
     chosen_number = spin()
+    if chosen_number is None:
+        return redirect('/numberspin/solo')
     if chosen_number < pnumber:
         session['spinsolo']['score'] = 0
         session['spinsolo']['buttons'] = False
@@ -90,6 +95,8 @@ def higher():
 def lower():
     pnumber = session['spinsolo']['chosen_number']
     chosen_number = spin()
+    if chosen_number is None:
+        return redirect('/numberspin/solo')
     if chosen_number > pnumber:
         session['spinsolo']['score'] = 0
         session['spinsolo']['buttons'] = False
@@ -98,12 +105,12 @@ def lower():
     else:
         session['spinsolo']['score'] += int(round(session['spinsolo']['multiplier'] * session['spinsolo']['chosen_number']))
         session.modified = True
-
     return redirect('/numberspin/solo')
 
 @luck.route('/numberspin/solo/end')
 def end():
     session['spinsolo']['state'] = 'win'
+    session['spinsolo']['buttons'] = False
     session.modified = True
     try:
         with open('spininfo.json', 'r') as f:
@@ -127,10 +134,6 @@ def end():
         json.dump(info, f)
     return redirect('/numberspin/solo')
 
-@luck.route('/spinsolo/test')
-def end_session():
-    session.pop('spinsolo', None)
-    return redirect('/numberspin/solo')
 
 @luck.route('/numberspin/solo/new')
 def new_game():
