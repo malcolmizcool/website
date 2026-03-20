@@ -10,6 +10,24 @@ admin = Blueprint('admin', __name__)
 def migrate_game():
     return render_template('migrategameinfo.html')
 
+@admin.route('/admin/migratenumber', methods=['POST'])
+def migrate_number():
+    newfield = request.form['newfield']
+    default_value = request.form['value']
+    try:
+        with open('spininfo.json', 'r') as f:
+            players = json.load(f)
+    except:
+        players = []
+    for player in players:
+        if newfield not in player:
+            player[newfield] = default_value
+    
+    with open('playergameinfo.json', 'w') as f:
+        json.dump(players, f)
+    
+    return f"done <a href='/admin'>do another</a>"
+
 @admin.route('/admin/migrategame', methods=['POST'])
 def migrategame():
     newfield = request.form['newfield']
