@@ -43,7 +43,9 @@ def update_last_seen():
             users = json.load(f)
         for user in users:
             if user['username'] == session['user']:
-                user['lastSeen'] = datetime.now().strftime('%d/%m/%y %H:%M:%S')
+                tz = pytz.timezone('Australia/Sydney')
+                user['lastSeen'] = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
+                print(user['lastSeen'])
                 break
         with open('uandp.json', 'w') as f:
             json.dump(users, f)
