@@ -109,3 +109,12 @@ button {
     color: rgb(253, 253, 65);
     text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }
+
+.game-table {
+    border-collapse: collapse;
+    text-align: center;
+}
+.game-table td, .game-table th {
+    border: 1px solid #000000;
+    padding: 8px;
+}
