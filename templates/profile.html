@@ -26,7 +26,12 @@
     Single player wins: {{ player['bswins'] }} <br>
     Multiplayer wins: {{ player['bmwins'] }} <br>
     Multiplayer rating: {{ player['brating'] }} <br>
-    Blackjacks: {{ player['tblackjacks'] }} <br> <hr>
+    Blackjacks: {{ player['tblackjacks'] }} <br>
+    
+    <br>
+    <b>Numberspin</b> <br>
+    Highscore: {{ score }}
+    <hr>
     
      Change pfp: <br>
     <form action="/profile/{{ username }}/uploadpfp" method="POST" enctype="multipart/form-data">
@@ -67,7 +72,12 @@
     Single player wins: {{ player['bswins'] }} <br>
     Multiplayer wins: {{ player['bmwins'] }} <br>
     Multiplayer rating: {{ player['brating'] }} <br>
-    Blackjacks: {{ player['tblackjacks'] }} <br> <hr>
+    Blackjacks: {{ player['tblackjacks'] }} <br>
+    
+    <br>
+    <b>Numberspin:</b> <br>
+    Highscore: {{ score }}
+    <hr>
 {% endif %}
 
 {% endblock %}
