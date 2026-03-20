@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Numberspin{% endblock %}
+{% block content %}
+
+<h3>Numberspin</h3>
+
+Welcome to Numberspin! <br>
+In this game, you will be presented with a table of numbers. Each roll you make will land on a random number, and after that turn, that number will be removed from that round. You will be awarded the amount of points as shown in the table. <br>
+<br>
+There are two options: <br> 
+1. If you think the next roll will result in a higher number, click the 'higher' button. <br>
+2. If you think the next roll will result in a lower number, click the 'lower' button. <br> <br>
+If you are incorrect, you lose all points from the round. If you are unsure, you can bank your points and end the round. The aim of the game is to bank as many points as possible. <br><br>
+Good luck :)
+<hr> <br>
+<b>Your best scores:</b> <br>
+{% for entry in user_scores[:5] %}
+    {{ loop.index }}. {{ user }}: {{ entry }} <br>
+{% endfor %}
+<br>
+<b>Leaderboard:</b> <br>
+{% for entry in list1[:5] %}
+    {{ loop.index }}. {{ entry[0] }}: {{ entry[1] }} <br>
+{% endfor %}
+<br>
+<hr>
+<div style="display: flex; justify-content: center;">
+    <a href="/numberspin/solo"><button>Single Player</button></a>
+    <button disabled>Multiplayer</button>
+</div>
+
+
+
+{% endblock %}
