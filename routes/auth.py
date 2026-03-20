@@ -69,7 +69,18 @@ def profile(username):
     fraction = f"{achieved_achievements}/{total_achievements}"
     percentage = (achieved_achievements/total_achievements)*100
     percentage = round(percentage, 2)
-    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage)
+
+    with open('spininfo.json', 'r') as f:
+        info = json.load(f)
+    for i in info:
+        if i['user'] == username:
+            scores = i['scores']
+        else:
+            scores = [0]
+    scores.sort(reverse=True)
+    score = scores[0]
+
+    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
