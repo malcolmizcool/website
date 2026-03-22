@@ -21,6 +21,17 @@
         {% endfor %}
     {% endfor %}
     <hr>
+    {% if show_flairs %}
+        <h3>Flairs</h3>
+        {% for flair in flairs %}
+            {% for i in flair_list %}
+                {% if i['id'] == flair %}
+                    <span class="rarity-{{ i['rarity'] }}">{{ i['name'] }}</span> — {{ i['description'] }} <br>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        <hr>
+    {% endif %}
     <h3>Game Stats</h3>
     <b>Blackjack:</b> <br>
     Single player wins: {{ player['bswins'] }} <br>
@@ -67,6 +78,17 @@
         {% endfor %}
     {% endfor %}
     <hr>
+    {% if show_flairs %}
+        <h3>Flairs</h3>
+        {% for flair in flairs %}
+            {% for i in flair_list %}
+                {% if i['id'] == flair %}
+                    <span class="rarity-{{ i['rarity'] }}">{{ i['name'] }}</span> — {{ i['description'] }} <br>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        <hr>
+    {% endif %}
     <h3>Game Stats</h3>
     <b>Blackjack:</b> <br>
     Single player wins: {{ player['bswins'] }} <br>

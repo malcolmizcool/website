@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timedelta
 import os
 from werkzeug.utils import secure_filename
-from helpers import get_achievements, award_achievement
+from helpers import get_achievements, award_achievement, get_flairs
 
 auth = Blueprint('auth', __name__)
 
@@ -50,6 +50,10 @@ def profile(username):
         return "user not found", 404
     
     user_achievements = get_achievements(username)['achievements']
+    user_flairs = get_flairs(username)['flairs']
+
+    show_flairs = False
+
     with open('playergameinfo.json', 'r') as f:
         game_info = json.load(f)
     player_info = None
@@ -60,6 +64,11 @@ def profile(username):
     with open('achievement_list.json', 'r') as f:
         alist = json.load(f)
     
+    with open('flair_list.json', 'r') as f:
+        flist = json.load(f)
+    
+
+
     if session.get('user') and session['user'] != username and username == "picklez_gaming":
         award_achievement(session['user'], 'visit_pickle')
     last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
@@ -72,15 +81,23 @@ def profile(username):
 
     with open('spininfo.json', 'r') as f:
         info = json.load(f)
+    scores = [0]
     for i in info:
         if i['user'] == username:
             scores = i['scores']
-        else:
-            scores = [0]
+            break
     scores.sort(reverse=True)
     score = scores[0]
 
-    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score)
+    if len(user_flairs) >= 1:
+        show_flairs = True
+
+    print('user flairs:')
+    print(user_flairs)
+    print('flair list')
+    print(flist)
+
+    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():

@@ -15,8 +15,25 @@ def get_achievements(username):
         with open('achievements.json', 'w') as f:
             json.dump(achievements, f)
 
-    
     return user_achievements
+
+
+def get_flairs(username):
+    try:
+        with open('flairs.json', 'r') as f:
+            flairs = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        flairs = []
+    
+    user_flairs = next((a for a in flairs if a['user'] == username), None)
+    
+    if user_flairs is None:
+        user_flairs = {'user': username, 'flairs': []}
+        flairs.append(user_flairs)
+        with open('flairs.json', 'w') as f:
+            json.dump(flairs, f)
+
+    return user_flairs
 
 def award_achievement(user, achievement_id):
     try:
