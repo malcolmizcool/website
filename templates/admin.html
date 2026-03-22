@@ -43,6 +43,37 @@
         <input type="text" id="achievementid" name="achievementid"> <br>
         <input type="submit" class="buttonthing">
     </form>
+    <br><br>
+    <b>Add flair:</b>
+    <form action="/admin/flair/add" method="POST">
+        <label for="achievementid">id:</label>
+        <input type="text" id="achievementid" name="achievementid"> <br>
+        <label for="achievementname"> flair name: </label>
+        <input type="text" id="achievementname" name="achievementname"> <br>
+        <label for="achievementdescription"> flair description: </label>
+        <input type="text" id="achievementdescription" name="achievementdescription"> <br>
+        <label for="achievementcolour"> flair rarity: </label>
+        <input type="text" id="achievementcolour" name="achievementcolour"> <br>
+        <input type="submit" class="buttonthing">
+    </form> <a href="/admin?show=flairs"><button class="buttonthing">Show flairs</button></a><br>
+    {% if show_flairs %}
+    {% for a in flair_list %}
+        <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}
+            <form action="/admin/flair/delete" method="POST" style="display: inline;">
+        <input type="hidden" name="id" value="{{ a.id }}">
+        <button type="submit" class="buttonthing">Delete</button>
+    </form><br>
+    {% endfor %}
+{% endif %}
+    <b>Award flair:</b>
+    <form action="/admin/flair/award" method="POST">
+        <label for="user">username:</label>
+        <input type="text" id="user" name="user"> <br>
+        <label for="achievementid"> flair id: </label>
+        <input type="text" id="achievementid" name="achievementid"> <br>
+        <input type="submit" class="buttonthing">
+    </form>
+    <br><br>
     <b>Migrate number game</b>
     <form action="/admin/migratenumber" method="POST">
         <label for="newfield">newfield:</label>
