@@ -42,3 +42,28 @@ def award_achievement(user, achievement_id):
     
     with open('achievements.json', 'w') as f:
         json.dump(entries, f)
+    
+def award_flair(user, achievement_id):
+    try:
+        with open('flairs.json', 'r') as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        entries = []
+    
+    user_record = None
+    for entry in entries:
+        if entry['user'] == user:
+            user_record = entry
+            break
+    
+    if user_record:
+        if achievement_id not in user_record['flairs']:
+            user_record['flairs'].append(achievement_id)
+    else:
+        entries.append({
+            "user": user,
+            "flairs": [achievement_id]
+        })
+    
+    with open('flairs.json', 'w') as f:
+        json.dump(entries, f)

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session
 import json
 from datetime import datetime
 import os
-from helpers import award_achievement
+from helpers import award_achievement, award_flair
 
 admin = Blueprint('admin', __name__)
 
@@ -23,7 +23,7 @@ def migrate_number():
         if newfield not in player:
             player[newfield] = default_value
     
-    with open('playergameinfo.json', 'w') as f:
+    with open('spininfo.json', 'w') as f:
         json.dump(players, f)
     
     return f"done <a href='/admin'>do another</a>"
@@ -136,15 +136,52 @@ def award_player_achievement():
     award_achievement(user, achievement_id)
     return redirect('/admin')
 
+@admin.route('/admin/flair/add', methods=['POST'])
+def add_flair():
+    id = request.form['achievementid']
+    name = request.form['achievementname']
+    description = request.form['achievementdescription']
+    colour = request.form['achievementcolour']
+    new_achievement = {
+        "id": id,
+        "name": name,
+        "description": description,
+        "rarity": colour
+    }
+    try:
+        with open('flair_list.json', 'r') as f:
+            achievements = json.load(f)
+    except:
+        achievements = []
+    achievements.append(new_achievement)
+    with open('flair_list.json', 'w') as f:
+        json.dump(achievements, f)
+    return redirect('/admin')
+    
+@admin.route('/admin/flair/award', methods=['POST'])
+def award_player_flair():
+    user = request.form['user']
+    achievement_id = request.form['achievementid']
+    award_flair(user, achievement_id)
+    return redirect('/admin')
+
 @admin.route('/admin')
 def admin_page():
     show_achievements = request.args.get('show') == 'achievements'
+    show_flairs = request.args.get('show') == 'flairs'
     try:
         with open('achievement_list.json', 'r') as f:
             achievement_list = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         achievement_list = []
-    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements)
+    
+    try:
+        with open('flair_list.json', 'r') as f:
+            flair_list = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        flair_list = []
+
+    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements, flair_list = flair_list, show_flairs=show_flairs)
 
 @admin.route('/admin/achievement/delete', methods=['POST'])
 def delete_achievement():
@@ -154,4 +191,26 @@ def delete_achievement():
     achievements = [a for a in achievements if a['id'] != achievement_id]
     with open('achievement_list.json', 'w') as f:
         json.dump(achievements, f)
+    with open('achievements.json', 'r') as f:
+        users = json.load(f)
+    for user in users:
+        user['achievements'] = [a for a in user['achievements'] if a != achievement_id]
+    with open('achievements.json', 'w') as f:
+        json.dump(users, f)
     return redirect('/admin?show=achievements')
+
+@admin.route('/admin/flair/delete', methods=['POST'])
+def delete_flair():
+    achievement_id = request.form['id']
+    with open('flair_list.json', 'r') as f:
+        achievements = json.load(f)
+    achievements = [a for a in achievements if a['id'] != achievement_id]
+    with open('flair_list.json', 'w') as f:
+        json.dump(achievements, f)
+    with open('flairs.json', 'r') as f:
+        users = json.load(f)
+    for user in users:
+        user['flairs'] = [a for a in user['flairs'] if a != achievement_id]
+    with open('flairs.json', 'w') as f:
+        json.dump(users, f)
+    return redirect('/admin?show=flairs')
