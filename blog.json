@@ -1,8 +1,1 @@
-[
-    {
-        "id": "1",
-        "title": "First Blog!",
-        "content": "Today I created a backend for the website, and now there is a working blog, guest book and a feedback page. If you haven't done this yourself you dont know how cool this is lol. I am writing because i need at least one entry in the blog otherwise the entire page crashes so idk this is kinda forced im just doing this so it doesnt break. :) :)",
-        "date": "11/03/26"
-    }
-]
+[{"id": "2", "title": "New update :)", "content": "Now there are user accounts and you can view each other\u2019s profiles this is so exciting.\r\nAlso Ned called dad on the verge of tears - dad \ud83d\ude2d\ud83d\ude2d", "date": "16/03/26"}, {"id": "1", "title": "First Blog!", "content": "Today I created a backend for the website, and now there is a working blog, guest book and a feedback page. If you haven't done this yourself you dont know how cool this is lol. I am writing because i need at least one entry in the blog otherwise the entire page crashes so idk this is kinda forced im just doing this so it doesnt break. :) :)", "date": "11/03/26"}]
