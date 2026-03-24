@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import os
 from helpers import award_achievement, award_flair
+import uuid
 
 admin = Blueprint('admin', __name__)
 
@@ -214,3 +215,80 @@ def delete_flair():
     with open('flairs.json', 'w') as f:
         json.dump(users, f)
     return redirect('/admin?show=flairs')
+
+@admin.route('/admin/notification/direct', methods=['POST'])
+def send_direct_notification():
+    user = request.form['user']
+    title = request.form['title']
+    message = request.form['message']
+    time = datetime.now().isoformat()
+
+    with open('notifications.json', 'r') as f:
+        notifications = json.load(f)
+
+    new_notification = {
+        'id': str(uuid.uuid4()),
+        'title': title,
+        'message': message,
+        'time': time,
+        'is_read': False,
+        'type': None
+    }
+
+    user_entry = None
+    for entry in notifications:
+        if entry['user'] == user:
+            user_entry = entry
+            break
+
+    if user_entry:
+        user_entry['notifications'].append(new_notification)
+    else:
+        notifications.append({
+            'user': user,
+            'notifications': [new_notification]
+        })
+
+    with open('notifications.json', 'w') as f:
+        json.dump(notifications, f)
+
+    return redirect('/admin')
+
+@admin.route('/admin/notifications/universal', methods=['POST'])
+def send_universal_notification():
+    title = request.form['title']
+    message = request.form['message']
+    time = datetime.now().isoformat()
+
+    try:
+        with open('uandp.json', 'r') as f:
+            users = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        users = []
+
+    try:
+        with open('notifications.json', 'r') as f:
+            notifications = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        notifications = []
+
+    new_notification = {
+        'id': str(uuid.uuid4()),
+        'title': title,
+        'message': message,
+        'time': time,
+        'is_read': False,
+        'type': None
+    }
+
+    for user in users:
+        entry = next((e for e in notifications if e['user'] == user['username']), None)
+        if entry is None:
+            entry = {'user': user['username'], 'notifications': []}
+            notifications.append(entry)
+        entry['notifications'].append(new_notification)
+
+    with open('notifications.json', 'w') as f:
+        json.dump(notifications, f)
+
+    return redirect('/admin')

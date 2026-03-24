@@ -2,86 +2,164 @@
 {% block title %}Admin{% endblock %}
 {% block content %}
 
+<style>
+    .admin-wrap { max-width: 600px; margin: 20px auto; }
+    .section-title { font-size: 0.8em; text-transform: uppercase; color: #888; border-bottom: 1px solid #ddd; padding-bottom: 3px; margin: 20px 0 10px 0; }
+    .card { border-left: 3px solid #ccc; padding: 8px 12px; margin-bottom: 10px; }
+    .card b { display: block; margin-bottom: 8px; }
+    .achievement-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid #f0f0f0; }
+    .achievement-row:last-child { border-bottom: none; }
+</style>
+
 {% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
+
+<div class="admin-wrap">
+
     <a href="/admin/migrategame"><button class="buttonthing">Migrate Game Player Info</button></a>
-    <a href="/admin/migrateuandp"><button class="buttonthing">Migrate uandp Info</button></a> <a href="/admin/feedback"><button>Feedback</button></a>
-    <a href="/admin/users"><button>View Users</button></a> <br>
-    <br><b>Change user rank:</b>
-    <form action="/admin/userrank" method="POST">
-        <label for="user">user:</label>
-        <input type="text" id="user" name="user"> <br>
-        <label for="newrank">new rank:</label>
-        <input type="text" id="newrank" name="newrank"> <br>
-        <input type="submit" class="buttonthing">
-    </form> <br>
-    <b>Add achievement:</b>
-    <form action="/admin/achievement/add" method="POST">
-        <label for="achievementid">id:</label>
-        <input type="text" id="achievementid" name="achievementid"> <br>
-        <label for="achievementname"> achievement name: </label>
-        <input type="text" id="achievementname" name="achievementname"> <br>
-        <label for="achievementdescription"> achievement description: </label>
-        <input type="text" id="achievementdescription" name="achievementdescription"> <br>
-        <label for="achievementcolour"> achievement rarity: </label>
-        <input type="text" id="achievementcolour" name="achievementcolour"> <br>
-        <input type="submit" class="buttonthing">
-    </form> <a href="/admin?show=achievements"><button class="buttonthing">Show Achievements</button></a><br>
+    <a href="/admin/migrateuandp"><button class="buttonthing">Migrate uandp Info</button></a>
+    <a href="/admin/feedback"><button>Feedback</button></a>
+    <a href="/admin/users"><button>View Users</button></a>
+
+    <div class="section-title">Notifications</div>
+
+    <div class="card">
+        <b>Send Direct Notification</b>
+        <form action="/admin/notification/direct" method="POST">
+            <label for="user">user:</label>
+            <input type="text" id="user" name="user"> <br>
+            <label for="title">title:</label>
+            <input type="text" id="title" name="title"> <br>
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message"></textarea><br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+    <div class="card">
+        <b>Send Sitewide Notification</b>
+        <form action="/admin/notifications/universal" method="POST">
+            <label for="title">title:</label>
+            <input type="text" id="title" name="title"> <br>
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message"></textarea><br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+    <div class="section-title">Users</div>
+
+    <div class="card">
+        <b>Change user rank</b>
+        <form action="/admin/userrank" method="POST">
+            <label for="user">user:</label>
+            <input type="text" id="user" name="user"> <br>
+            <label for="newrank">new rank:</label>
+            <input type="text" id="newrank" name="newrank"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+    <div class="section-title">Achievements</div>
+
+    <div class="card">
+        <b>Add achievement</b>
+        <form action="/admin/achievement/add" method="POST">
+            <label for="achievementid">id:</label>
+            <input type="text" id="achievementid" name="achievementid"> <br>
+            <label for="achievementname">name:</label>
+            <input type="text" id="achievementname" name="achievementname"> <br>
+            <label for="achievementdescription">description:</label>
+            <input type="text" id="achievementdescription" name="achievementdescription"> <br>
+            <label for="achievementcolour">rarity:</label>
+            <input type="text" id="achievementcolour" name="achievementcolour"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+        <a href="/admin?show=achievements"><button class="buttonthing">Show Achievements</button></a>
+    </div>
+
     {% if show_achievements %}
-    {% for a in achievement_list %}
-        <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}
-            <form action="/admin/achievement/delete" method="POST" style="display: inline;">
-        <input type="hidden" name="id" value="{{ a.id }}">
-        <button type="submit" class="buttonthing">Delete</button>
-    </form><br>
-    {% endfor %}
-{% endif %}
-    <b>Award achievement:</b>
-    <form action="/admin/achievement/award" method="POST">
-        <label for="user">username:</label>
-        <input type="text" id="user" name="user"> <br>
-        <label for="achievementid"> achievement id: </label>
-        <input type="text" id="achievementid" name="achievementid"> <br>
-        <input type="submit" class="buttonthing">
-    </form>
-    <br><br>
-    <b>Add flair:</b>
-    <form action="/admin/flair/add" method="POST">
-        <label for="achievementid">id:</label>
-        <input type="text" id="achievementid" name="achievementid"> <br>
-        <label for="achievementname"> flair name: </label>
-        <input type="text" id="achievementname" name="achievementname"> <br>
-        <label for="achievementdescription"> flair description: </label>
-        <input type="text" id="achievementdescription" name="achievementdescription"> <br>
-        <label for="achievementcolour"> flair rarity: </label>
-        <input type="text" id="achievementcolour" name="achievementcolour"> <br>
-        <input type="submit" class="buttonthing">
-    </form> <a href="/admin?show=flairs"><button class="buttonthing">Show flairs</button></a><br>
+    <div class="card">
+        {% for a in achievement_list %}
+        <div class="achievement-row">
+            <span><span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}</span>
+            <form action="/admin/achievement/delete" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{ a.id }}">
+                <button type="submit" class="buttonthing">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <b>Award achievement</b>
+        <form action="/admin/achievement/award" method="POST">
+            <label for="user">username:</label>
+            <input type="text" id="user" name="user"> <br>
+            <label for="achievementid">achievement id:</label>
+            <input type="text" id="achievementid" name="achievementid"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+    <div class="section-title">Flairs</div>
+
+    <div class="card">
+        <b>Add flair</b>
+        <form action="/admin/flair/add" method="POST">
+            <label for="achievementid">id:</label>
+            <input type="text" id="achievementid" name="achievementid"> <br>
+            <label for="achievementname">name:</label>
+            <input type="text" id="achievementname" name="achievementname"> <br>
+            <label for="achievementdescription">description:</label>
+            <input type="text" id="achievementdescription" name="achievementdescription"> <br>
+            <label for="achievementcolour">rarity:</label>
+            <input type="text" id="achievementcolour" name="achievementcolour"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+        <a href="/admin?show=flairs"><button class="buttonthing">Show flairs</button></a>
+    </div>
+
     {% if show_flairs %}
-    {% for a in flair_list %}
-        <span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}
-            <form action="/admin/flair/delete" method="POST" style="display: inline;">
-        <input type="hidden" name="id" value="{{ a.id }}">
-        <button type="submit" class="buttonthing">Delete</button>
-    </form><br>
-    {% endfor %}
-{% endif %}
-    <b>Award flair:</b>
-    <form action="/admin/flair/award" method="POST">
-        <label for="user">username:</label>
-        <input type="text" id="user" name="user"> <br>
-        <label for="achievementid"> flair id: </label>
-        <input type="text" id="achievementid" name="achievementid"> <br>
-        <input type="submit" class="buttonthing">
-    </form>
-    <br><br>
-    <b>Migrate number game</b>
-    <form action="/admin/migratenumber" method="POST">
-        <label for="newfield">newfield:</label>
-        <input type="text" id="newfield" name="newfield"> <br>
-        <label for="value">default value:</label>
-        <input type="text" id="value" name="value"> <br>
-        <input type="submit" class="buttonthing">
-    </form>
+    <div class="card">
+        {% for a in flair_list %}
+        <div class="achievement-row">
+            <span><span class="rarity-{{ a.rarity }}">{{ a.name }}</span> — {{ a.id }} - {{ a.description }}</span>
+            <form action="/admin/flair/delete" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{ a.id }}">
+                <button type="submit" class="buttonthing">Delete</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <b>Award flair</b>
+        <form action="/admin/flair/award" method="POST">
+            <label for="user">username:</label>
+            <input type="text" id="user" name="user"> <br>
+            <label for="achievementid">flair id:</label>
+            <input type="text" id="achievementid" name="achievementid"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+    <div class="section-title">Migration</div>
+
+    <div class="card">
+        <b>Migrate number game</b>
+        <form action="/admin/migratenumber" method="POST">
+            <label for="newfield">newfield:</label>
+            <input type="text" id="newfield" name="newfield"> <br>
+            <label for="value">default value:</label>
+            <input type="text" id="value" name="value"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
+</div>
+
 {% else %}
     You shouldn't be here!
 {% endif %}

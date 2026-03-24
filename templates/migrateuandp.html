@@ -4,6 +4,12 @@
 <form action="/admin/migrateuandp" method="POST">
     <label for="newfield">newfield:</label>
     <input type="text" id="newfield" name="newfield"> <br>
+    <select name="valuetype">
+    <option value="string">String</option>
+    <option value="int">Integer</option>
+    <option value="float">Float</option>
+    <option value="bool">Boolean</option>
+    </select> <br>
     <label for="value">default value:</label>
     <input type="text" id="value" name="value"> <br>
     <input type="submit" class="buttonthing">

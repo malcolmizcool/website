@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Your notifications{% endblock %}
+{% block content %}
+{% if entry['notifications'] %}
+{% for n in entry['notifications'] | reverse %}
+<div style="border-left: 3px solid #ccc; padding: 8px 12px; margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <b>{{ n['title'] }}</b>
+        <small style="color: #888;">{{ n['time'] | format_time }}</small>
+    </div>
+    <p style="margin: 4px 0 0 0;">{{ n['message'] }}</p>
+    <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+        <form method="POST" action="/notifications/delete">
+            <input type="hidden" name="notification_id" value="{{ n['id'] }}">
+            <button type="submit" >Delete</button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+You have no notifications. Please check back later. 
+{% endif %}
+{% endblock %}

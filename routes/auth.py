@@ -120,7 +120,8 @@ def createAccount():
         'role': "user",
         'accountDate': f"{date}",
         'verified': "False",
-        'lastSeen': datetime.now().strftime('%d/%m/%y %H:%M:%S')
+        'lastSeen': datetime.now().strftime('%d/%m/%y %H:%M:%S'),
+        'xp': 0
     }
 
     if not username or not password:
@@ -169,3 +170,35 @@ def uploadpfp(username):
         file.save(os.path.join('static/avatars', filename))
     
     return redirect(f'/profile/{username}')
+
+@auth.route('/notifications')
+def show_notifications():
+    with open('notifications.json', 'r') as f:
+        notifications = json.load(f)
+    
+    user = session.get('user')
+    user_entry = []
+    for entry in notifications:
+        if entry['user'] == user:
+            user_entry = entry
+    return render_template('notifications.html', entry=user_entry)
+
+@auth.route('/notifications/delete', methods=['POST'])
+def delete_notification():
+    notification_id = request.form['notification_id']
+
+    try:
+        with open('notifications.json', 'r') as f:
+            notifications = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        notifications = []
+
+    for entry in notifications:
+        entry['notifications'] = [
+            n for n in entry['notifications'] if n['id'] != notification_id
+        ]
+
+    with open('notifications.json', 'w') as f:
+        json.dump(notifications, f)
+
+    return redirect('/notifications')

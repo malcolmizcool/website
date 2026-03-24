@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, session
 import json
 from datetime import datetime
 import pytz
+import uuid
 
 from routes.auth import auth
 from routes.blog import blog
@@ -103,7 +104,28 @@ def reportSubmit():
     entries.append(entry)
     with open('feedback.json', 'w') as f:
         json.dump(entries, f)
+    ctime = datetime.now().isoformat()
+    with open('notifications.json', 'r') as f:
+        notifications = json.load(f)
+    new_notification = {
+        'id': str(uuid.uuid4()),
+        'title': 'New feedback',
+        'message': f'A new ticket has been opened in feedback from user {aname} regarding {name}',
+        'time': ctime,
+        'is_read': False,
+        'type': None
+    }
+    for entry in notifications:
+        if entry['user'] == 'malcolm':
+            entry['notifications'].append(new_notification)
+    with open('notifications.json', 'w') as f:
+        json.dump(notifications, f)
     return render_template('thanks.html')
+
+@app.template_filter('format_time')
+def format_time(value):
+    dt = datetime.fromisoformat(value)
+    return dt.strftime('%d %B %Y, %I:%M %p')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
