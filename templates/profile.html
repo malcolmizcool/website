@@ -4,10 +4,8 @@
 
 {% if session.get('user') == username %}
     <h2>Hello, <span class="role-{{ user.role }}">{{ username }}</span>
-    {% if user.role != 'user' %}
-    ({{ user.role }})
-    {% endif %}  
-    </h2> <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover"> <br>
+    </h2> 
+    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover"> <br>
     {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
@@ -59,13 +57,13 @@
 
         {% endif %}
 </h2>
+    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover;"> <br>
+    {{ user['bio']|safe }} <br>
             {% if online %}
     <span style="color: rgb(21, 161, 49);">Online now</span> <br>
             {% else %}
             Last seen: {{ last_seen }} <br>
     {% endif %}
-    <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover;"> <br>
-    {{ user['bio']|safe }} <br>
     Account created: {{ user['accountDate'] }}
     <hr>
     <h3>Achievements</h3>
