@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}New Thread - {{ board.name }}{% endblock %}
+{% block content %}
+
+<p style="color: grey; font-size: 0.85em;"><a href="/forum">Forum</a> > <a href="/forum/{{ slug }}">{{ board.name }}</a> > New Thread</p>
+
+<h2>New Thread</h2>
+<hr>
+
+<form method="POST" action="/forum/{{ slug }}/new">
+    <div style="margin-bottom: 16px;">
+        <label for="title" style="display: block; margin-bottom: 4px;">Title</label>
+        <input type="text" name="title" id="title" style="width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #ccc; font-family: inherit; font-size: 1em;">
+    </div>
+    <div style="margin-bottom: 16px;">
+        <label for="content" style="display: block; margin-bottom: 4px;">Content</label>
+        <textarea name="content" id="content" rows="10" style="width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #ccc; font-family: inherit; font-size: 1em; resize: vertical;"></textarea>
+    </div>
+    <button type="submit">Post Thread</button>
+</form>
+
+{% endblock %}

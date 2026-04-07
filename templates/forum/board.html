@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Forum{% endblock %}
+{% block content %}
+{% if threads %}
+<h2>{{ board.name }}</h2>
+<p style="color: grey; font-size: 0.85em;">{{ board.description }}</p>
+{% if not board.restricted or roles.get(session.get('user')) == 'admin' %}
+<a href="/forum/{{ slug }}/new"><button>New Thread</button></a>
+{% endif %}
+<hr>
+{% for thread in threads %}
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+    <div>
+        {% if thread.is_pinned %}<span style="color: grey; font-size: 0.85em;">📌</span>{% endif %}
+        {% if thread.is_locked %}<span style="color: grey; font-size: 0.85em;">🔒</span>{% endif %}
+        <b><a href="/forum/{{ slug }}/{{ thread.id }}">{{ thread.title }}</a></b>
+        <br>
+        <span style="color: grey; font-size: 0.85em;">by <a href="/profile/{{ thread.author }}">{{ thread.author }}</a> · {{ thread.created_at.strftime('%d/%m/%y %H:%M') }}</span>
+    </div>
+    <div style="text-align: right; color: grey; font-size: 0.85em;">
+        {{ thread.posts | length }} posts
+    </div>
+</div>
+<hr>
+{% endfor %}
+{% else %}
+<h2>{{ board.name }}</h2>
+<p style="color: grey; font-size: 0.85em;">{{ board.description }}</p>
+<a href="/forum/{{ slug }}/new"><button>New Thread</button></a>
+<hr>
+
+{% endif %}
+
+{% endblock %}

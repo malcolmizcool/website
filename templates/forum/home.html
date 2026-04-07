@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Forums{% endblock %}
+{% block content %}
+    <h3>Forums</h3>
+    Welcome to Forums! <br>
+    Please be nice to each other :)
+    <br><br>
+    The guestbook can be found <a href="/guest"><button>here</button></a>.
+    <hr> 
+    {% for board in boards %}
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+    <div>
+        <b><a href="/forum/{{ board.slug }}">{{ board.name }}</a></b>
+        <br>
+        <span style="color: grey; font-size: 0.85em;">{{ board.description }}</span>
+    </div>
+    <div style="text-align: right; color: grey; font-size: 0.85em;">
+        {{ board.thread_count }} threads
+        <br>
+        {% if board.latest %}
+            latest: <a href="/forum/{{ board.slug }}/{{ board.latest.id }}">{{ board.latest.title }}</a>
+        {% else %}
+            no threads yet
+        {% endif %}
+    </div>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}

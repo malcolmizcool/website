@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import json
 
@@ -15,7 +15,15 @@ def guest_page():
     with open('uandp.json', 'r') as f:
         users  = json.load(f)
     roles = {u['username']: u.get('role', 'user') for u in users}
-    return render_template('guest.html', entries=entries, users=users, roles=roles)
+
+    online_status = {}
+    for user in users:
+        last_online = datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S")
+        status = datetime.now() - last_online < timedelta(minutes=5)
+        online_status[user['username']] = status
+
+    current_user = session.get('user')
+    return render_template('guest.html', entries=entries, users=users, roles=roles, online_status=online_status, current_user=current_user)
 
 @guest.route('/sign')
 def sign():
