@@ -5,6 +5,9 @@ import json
 from datetime import datetime
 import pytz
 import uuid
+from flask_sqlalchemy import SQLAlchemy
+from extensions import db
+
 
 from routes.auth import auth
 from routes.blog import blog
@@ -12,9 +15,15 @@ from routes.guest import guest
 from routes.jack import jack
 from routes.admin import admin
 from routes.luck import luck
+from routes.forum import forum
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
 
 
 app.register_blueprint(auth)
@@ -23,6 +32,7 @@ app.register_blueprint(guest)
 app.register_blueprint(jack)
 app.register_blueprint(admin)
 app.register_blueprint(luck)
+app.register_blueprint(forum)
 
 pages = ["empty", 
          "faqs", 
@@ -126,6 +136,9 @@ def reportSubmit():
 def format_time(value):
     dt = datetime.fromisoformat(value)
     return dt.strftime('%d %B %Y, %I:%M %p')
+
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
