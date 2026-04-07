@@ -3,6 +3,7 @@ from extensions import db
 from models import Thread, Post
 import json
 from datetime import datetime, timedelta
+import uuid
 
 forum = Blueprint('forum', __name__)
 
@@ -112,6 +113,8 @@ def reply(board, thread_id):
         return redirect('/login')
     
     thread = Thread.query.get(thread_id)
+    thread_author = thread.author
+    thread_title = thread.title
     if not thread or thread.is_locked:
         return "404 not found", 404
     
@@ -125,6 +128,52 @@ def reply(board, thread_id):
         content=content
     )
     db.session.add(post)
+    db.session.commit()
+
+    time = datetime.now().isoformat()
+
+    with open ('notifications.json', 'r') as f:
+        notification_entries = json.load(f)
+    
+
+    for entry in notification_entries:
+        if entry['user'] == thread_author and thread_author != session['user']:
+            new_notification = {
+            'id': str(uuid.uuid4()),
+            'title': 'New reply',
+            'message': session['user'] + " has replied to your post '" + thread_title + "'",
+            'time': time,
+            'is_read': False,
+            'type': None
+            }
+
+            entry['notifications'].append(new_notification)
+    with open('notifications.json', 'w') as f:
+        json.dump(notification_entries, f)
+    
+
+    
+    return redirect(f'/forum/{board}/{thread_id}')
+
+@forum.route('/forum/post/delete', methods=['POST'])
+def delete_post():
+    if not session.get('user'):
+        return redirect('/login')
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    roles = {user['username']: user['role'] for user in users}
+    if roles.get(session['user'], 'user') != 'admin':
+        return "not authorised", 403
+    
+    post_id = request.form.get('post_id')
+    thread_id = request.form.get('thread_id')
+    board = request.form.get('board')
+    
+    post = Post.query.get(post_id)
+    if not post:
+        return "404 not found", 404
+    
+    db.session.delete(post)
     db.session.commit()
     
     return redirect(f'/forum/{board}/{thread_id}')
