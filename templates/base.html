@@ -16,7 +16,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <a href="/"><button class="buttonthing">Home</button></a> <a href="/status"> <button class="buttonthing">Status</button></a> <a href="/blog"><button class="buttonthing">Blog</button></a>
-            <a href="/guest"><button class="buttonthing" >Guest Book</button></a><a href="/forum"><button>Forums</button></a><a href="/games"><button class="buttonthing" >Games</button></a>
+            <a href="/forum"><button>Forums</button></a><a href="/games"><button class="buttonthing" >Games</button></a>
             {% if session.get('role', 'user') == 'admin' %}
             <a href="/admin"><button class="buttonthing">Admin</button></a>
             {% endif %}
