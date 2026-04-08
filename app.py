@@ -6,6 +6,8 @@ from datetime import datetime
 import pytz
 import uuid
 from flask_sqlalchemy import SQLAlchemy
+from pymdownx import emoji
+import bleach, markdown
 from extensions import db
 
 
@@ -46,6 +48,57 @@ def catch(page):
     if page in pages:
         return render_template(page + '.html')
     return "404 not found", 404
+
+@app.template_filter('md')
+def markdown_filter(text):
+    return markdown.markdown(text, extensions=[
+    # built-in extensions
+    'tables',               # | table | syntax |
+    'fenced_code',          # ``` code blocks ```
+    'nl2br',                # line breaks respected
+    'attr_list',            # add attributes to elements
+    'def_list',             # definition lists
+    'footnotes',            # footnote[^1] syntax
+    'abbr',                 # abbreviations
+    'admonition',           # !!! note "title" blocks
+    'toc',                  # [TOC] table of contents
+    'sane_lists',           # better list behaviour
+    'smarty',               # smart quotes and dashes
+
+    # pymdownx extensions
+    'pymdownx.mark',        # ==highlight==
+    'pymdownx.tilde',       # ~~strikethrough~~
+    'pymdownx.caret',       # ^^underline^^ and ^superscript^
+    'pymdownx.emoji',       # :smile:
+    'pymdownx.tasklist',    # - [ ] checkboxes
+    'pymdownx.superfences', # better code blocks
+    'pymdownx.highlight',   # syntax highlighting in code blocks
+    'pymdownx.inlinehilite',# `#!python inline code` highlighting
+    'pymdownx.keys',        # ++ctrl+c++ keyboard keys
+    'pymdownx.details',     # ??? collapsible blocks
+    'pymdownx.tabbed',      # === tabbed content
+    'pymdownx.smartsymbols',# (tm) (c) (r) symbols
+    'pymdownx.magiclink',   # auto-links URLs without []()
+    'pymdownx.betterem',    # smarter bold/italic handling
+    'pymdownx.critic',      # {--delete--} {++add++} markup
+    'pymdownx.snippets',    # --8<-- include files
+    'pymdownx.progressbar',
+], extension_configs={
+    'pymdownx.highlight': {
+        'linenums': True,   # line numbers in code blocks
+    },
+    'pymdownx.tasklist': {
+        'custom_checkbox': True,
+    },
+    'pymdownx.tabbed': {
+        'alternate_style': True,  # required for modern tab syntax
+    },
+})
+
+def render_md(text):
+    html = markdown.markdown(text)
+    allowed_tags = ['p','strong','em','ul','ol','li','code','pre','blockquote','h3','h4','a', 'highlight']
+    return bleach.clean(html, tags=allowed_tags, strip=True)
 
 @app.before_request
 def update_last_seen():
