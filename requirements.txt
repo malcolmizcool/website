@@ -1,3 +1,6 @@
 flask
 pytz
 Flask-SQLAlchemy
+markdown
+bleach
+pymdown-extensions

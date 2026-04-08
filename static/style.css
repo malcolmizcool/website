@@ -120,3 +120,12 @@ button {
     border: 1px solid #000000;
     padding: 8px;
 }
+.progress-bar {
+    height: 12px;
+    background: #111418;
+    border: 1px solid #2e3740;
+}
+.progress-bar-inner {
+    height: 100%;
+    background: #3a6880;
+}
