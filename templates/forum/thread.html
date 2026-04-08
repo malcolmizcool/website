@@ -21,7 +21,7 @@
     </div>
     <div style="flex: 1; padding-left: 16px; border-left: 1px solid #ccc; position: relative; word-break: break-word; white-space: pre-line;">
         <span style="color: grey; font-size: 0.85em;">{{ post.created_at.strftime('%d/%m/%y %H:%M') }}</span><br>
-        {{ post.content }}
+        {{ post.content | md | safe}}
         {% if roles.get(session.get('user'), 'user') == 'admin' %}
         <form action="/forum/post/delete" method="POST" style="position: absolute; bottom: 0; right: 0;">
             <input type="hidden" name="post_id" value="{{ post.id }}">
