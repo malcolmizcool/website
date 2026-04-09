@@ -55,7 +55,6 @@ def markdown_filter(text):
     # built-in extensions
     'tables',               # | table | syntax |
     'fenced_code',          # ``` code blocks ```
-    'nl2br',                # line breaks respected
     'attr_list',            # add attributes to elements
     'def_list',             # definition lists
     'footnotes',            # footnote[^1] syntax
@@ -83,15 +82,16 @@ def markdown_filter(text):
     'pymdownx.critic',      # {--delete--} {++add++} markup
     'pymdownx.snippets',    # --8<-- include files
     'pymdownx.progressbar',
+    
 ], extension_configs={
-    'pymdownx.highlight': {
-        'linenums': True,   # line numbers in code blocks
-    },
     'pymdownx.tasklist': {
         'custom_checkbox': True,
     },
     'pymdownx.tabbed': {
         'alternate_style': True,  # required for modern tab syntax
+    },
+    'pymdownx.arithmatex': {
+        'generic': True,
     },
 })
 
