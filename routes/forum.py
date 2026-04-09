@@ -177,3 +177,26 @@ def delete_post():
     db.session.commit()
     
     return redirect(f'/forum/{board}/{thread_id}')
+
+@forum.route('/forum/thread/delete', methods=['POST'])
+def delete_thread():
+    if not session.get('user'):
+        return redirect('/login')
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    roles = {user['username']: user['role'] for user in users}
+    if roles.get(session['user'], 'user') != 'admin':
+        return "not authorised", 403
+    
+    thread_id = request.form.get('thread_id')
+    board = request.form.get('board')
+    
+    thread = Thread.query.get(thread_id)
+    if not thread:
+        return "404 not found", 404
+    
+    Post.query.filter_by(thread_id=thread_id).delete()
+    db.session.delete(thread)
+    db.session.commit()
+    
+    return redirect(f'/forum/{board}')
