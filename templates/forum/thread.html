@@ -12,7 +12,7 @@
 <div style="display: flex;">
     <div style="display: flex; flex-direction: column; width: 150px; min-width: 150px; align-items: center;">
         <a href="/profile/{{ post.author }}"><img src="/static/avatars/{{ post.author }}.png" onerror="this.src='/static/avatars/default.png'" style="width: 100px; height: 100px; object-fit: cover"></a>
-        <b><a href="/profile/{{ post.author }}"><span class="role-{{ roles.get(post.author, 'user') }}">{{ post.author }}</span></a></b>
+        <b><a href="/profile/{{ post.author }}" style="text-decoration: none;"><span class="role-{{ roles.get(post.author, 'user') }}">{{ post.author }}</span></a></b>
         <span>
             {% if online_status.get(post.author) %}
                 <span style="color: green;">● online</span>

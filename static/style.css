@@ -93,8 +93,11 @@ textarea {
     color: red
 }
 
-a, a:visited, a:hover, a:active {
+a, a:visited, a:active {
     color: inherit;
+}
+a:hover {
+    color: #6a9ab8
 }
 
 button {
