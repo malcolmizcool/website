@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    container_name: website
+    ports:
+      - "6767:5000"
+    volumes:
+      - .:/site
+    restart: unless-stopped
+    env_file:
+      - .env
