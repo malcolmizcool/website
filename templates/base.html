@@ -8,11 +8,22 @@
     <link rel="apple-touch-icon" href="/static/icon.png" type="image/png">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
+
+    <style>
+        #website_heading {
+            text-decoration: none;
+        }
+        #website_heading:hover {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
     {% endblock %}
+    {% block extra_styles %} {% endblock %}
   </head>
   <body>
     <div id="heading" class="navbar">
-        <a href="/"><h1>Malcolm's Website</h1></a>
+        <a href="/" id="website_heading"><h1 style="text-shadow: 5px 5px 6px grey;">Malcolm's Website</h1></a>
     </div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>

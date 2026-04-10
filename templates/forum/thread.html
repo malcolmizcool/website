@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ thread.title }}{% endblock %}
+{% block extra_styles %}
+{% endblock %}
 {% block content %}
 
 <p style="color: grey; font-size: 0.85em;"><a href="/forum">Forum</a> > <a href="/forum/{{ slug }}">{{ board.name }}</a> > {{ thread.title }}</p>
