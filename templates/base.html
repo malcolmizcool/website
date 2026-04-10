@@ -23,7 +23,7 @@
   </head>
   <body>
     <div id="heading" class="navbar">
-        <a href="/" id="website_heading"><h1 style="text-shadow: 5px 5px 6px grey;">Malcolm's Website</h1></a>
+        <a href="/" id="website_heading"><h1 style="text-shadow: 5px 5px 6px grey; font-family: 'Times New Roman', Times, serif; font-size: 40px;">the-slab</h1></a>
     </div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
@@ -46,5 +46,7 @@
     </div>
     <hr>
     <div id="content" style="max-width: 1300; margin: 0 auto; padding: 0 16px;">{% block content %}{% endblock %}</div>
+      {% block extra_scripts %} {% endblock %}
   </body>
+
 </html>

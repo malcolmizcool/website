@@ -2,13 +2,15 @@ import os
 from flask import Flask, render_template, request, redirect, session
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import uuid
 from flask_sqlalchemy import SQLAlchemy
 from pymdownx import emoji
 import bleach, markdown
 from extensions import db
+import sys
+from models import Thread, Post
 
 
 from routes.auth import auth
@@ -118,6 +120,56 @@ def update_last_seen():
 
 @app.route('/')
 def index():
+    with open('uandp.json', 'r') as f:
+        users = json.load(f)
+    
+    online_users = []
+    new_users = []
+    all_users = []
+
+    for user in users:
+        last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
+        online = datetime.now() - last_seen < timedelta(minutes=5)
+        all_users.append(user['username'])
+        if online:
+            online_users.append(user['username'])
+
+    new_users = sorted(users, key=lambda u: datetime.strptime(u['accountDate'], '%d/%m/%y'), reverse=True)
+    new_users = [[u['username'], u['accountDate']] for u in new_users[:5]]
+
+    tonline_users = len(online_users)
+    online_users = online_users[:5]
+
+    FEATURED_THREAD_ID = 6
+
+    featured = Post.query.filter_by(thread_id=FEATURED_THREAD_ID).order_by(Post.created_at.asc()).first()
+    featured_thread = Thread.query.get(FEATURED_THREAD_ID)
+
+    try:
+        with open('counter.json', 'r') as f:
+            counter = json.load(f)
+    except FileNotFoundError:
+        counter = {'landing_page': 0}
+    
+    counter['landing_page'] += 1
+
+    visit_counter = counter['landing_page']
+    counted_users = len(all_users)
+
+    with open('counter.json', 'w') as f:
+        json.dump(counter, f)
+
+    with open('feedback.json', 'r') as f:
+        feedback = json.load(f)
+    
+    nfeedback = len(feedback)
+
+    return render_template('newindex.html', online_users=online_users, new_users=new_users, featured=featured, featured_thread=featured_thread, tonline_users=tonline_users, counter=visit_counter, counted_users=counted_users,
+                           nfeedback=nfeedback)
+
+@app.route('/oldpage')
+def old_page():
+
     return render_template('index.html')
 
 @app.route('/games')
