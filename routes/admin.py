@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 from helpers import award_achievement, award_flair
 import uuid
+import pytz
 
 admin = Blueprint('admin', __name__)
 
@@ -221,7 +222,8 @@ def send_direct_notification():
     user = request.form['user']
     title = request.form['title']
     message = request.form['message']
-    time = datetime.now().isoformat()
+    tz = pytz.timezone('Australia/Sydney')
+    time = datetime.now(tz).isoformat()
 
     with open('notifications.json', 'r') as f:
         notifications = json.load(f)
@@ -258,7 +260,8 @@ def send_direct_notification():
 def send_universal_notification():
     title = request.form['title']
     message = request.form['message']
-    time = datetime.now().isoformat()
+    tz = pytz.timezone('Australia/Sydney')
+    time = datetime.now(tz).isoformat()
 
     try:
         with open('uandp.json', 'r') as f:
