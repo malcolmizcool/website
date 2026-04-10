@@ -9,7 +9,7 @@
         <small style="color: #888;">{{ n['time'] | format_time }}</small>
     </div>
     <p style="margin: 4px 0 0 0;">{{ n['message'] | md | safe  }}</p>
-    <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+    <div style="display: flex; justify-content: flex-end; margin-top: 6px; ">
         <form method="POST" action="/notifications/delete">
             <input type="hidden" name="notification_id" value="{{ n['id'] }}">
             <button type="submit" >Delete</button>

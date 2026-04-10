@@ -12,6 +12,7 @@ BOARDS = {
     'general': {'name': 'General', 'description': 'General discourse', 'restricted': False},
     'games': {'name': 'Games', 'description': 'Regarding games', 'restricted': False},
     'feedback': {'name': 'Feedback', 'description': 'Suggestions and ideas for the future of this site', 'restricted': False},
+    'featured content': {'name': 'Featured Content', 'description': 'For content displayed on the landing page', 'restricted': False}
 }
 
 @forum.route('/forum')
