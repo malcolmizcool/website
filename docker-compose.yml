@@ -9,3 +9,20 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+
+  backup:
+    image: offen/docker-volume-backup:v2
+    container_name: website_backup
+    volumes:
+      # This tells the backup tool to look at your current folder
+      - .:/backup/the_slab:ro
+      # This creates a 'backups' folder in your project directory
+      - ./backups:/archive
+    environment:
+      # Runs every night at 2:00 AM
+      - BACKUP_CRON_EXPRESSION=0 2 * * *
+      # Keeps only the last 14 backups
+      - BACKUP_RETENTION_DAYS=14
+      # This names the file based on the date
+      - BACKUP_FILENAME=the-slab-backup-%Y-%m-%dT%H-%M-%S.tar.gz
+    restart: unless-stopped
