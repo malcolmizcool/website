@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block extra_styles %}
+<style>
+#important_links {
+    color: #6a9ab8;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div style="display: flex;">
+<div id="col-left">
+
+    <table>
+        <tr><td><b>about</b></td></tr>
+        <tr><td>Welcome to the-slab. There is much to do here. <br> 
+            Feel free to look around. <br>
+            I actively work on this site, so bugs and issues are bound to pop up. Please report them <a href="/report"><button>here</button></a>. <br>
+            If you have any requests or suggestions for the future of this site, let me know <a href="/forum/feedback"><button>here</button></a>.  
+        </td></tr>
+    </table>
+    <table>
+        <tr><td><b>updates</b></td></tr>
+        <tr><td> <span style="color: #c8a060;">⚠</span>14/04/26 - this site will <b>no longer be supported on mobile devices</b></td></tr>
+        <tr><td> 🤔 10/04/26 - the look of the landing page has been updated! please leave your feedback <a href="/forum/feedback">here</a>.</td></tr>
+        <tr><td><span style="color: #6aa888 ;">▶</span>08/04/26 - Markdown has been added to forums. read more <a href="/forum/announcements/4">here</a>.</td></tr>
+        <tr><td>😶 04/04/26 - a new game is officially in the works. it should have its first release in late May.</td></tr>
+        <tr><td><span style="color: #6a7480;">see all announcements <a href="forum/announcements">here</a></span></td></tr>
+    </table>
+    <div style="display: flex;">
+        <table>
+            <tr><td colspan="2"><b>important links</b></td></tr>
+            <tr><td>service</td><td>description</td></tr>
+            <tr><td><a href="https://github.com/malcolmizcool/website" target="_blank" id="important_links">GitHub:</a></td><td><span style="color: #6a7480;">the repository for this site</span></td></tr>
+            <tr><td><a href="http://192.168.0.51:5055" target="_blank" title="192.168.0.51:5055" id="important_links">Jellyseer</a></td><td><span style="color: #6a7480;">to request media</span></td></tr>
+            <tr><td><a href="https://tv.malcolmslab.com" target="_blank" title="tv.malcolmslab.com" id="important_links">Jellyfin</a></td><td><span style="color: #6a7480;">to watch media</span></td></tr>
+            <tr><td><a href="http://192.168.0.51:8080" target="_blank" title="192.168.0.51:8080" id="important_links">AMP</a></td><td><span style="color: #6a7480;">minecraft server hosting</span></td></tr>
+        </table>
+        <img src="/static/assets/blob.png" style="height: 100px; width: 100px; image-rendering: pixelated; cursor: pointer;" id="blobPic", onclick="changeBlob()">
+    </div>
+    <div style="display: flex;">
+    <table >
+        <tr><td><b>online users ({{ (tonline_users) }})</b></td></tr>
+        {% for user in online_users %}
+        <tr><td><a href="/profile/{{ user }}" style="text-decoration: none;">{{ user }}</a></td></tr>
+        {% endfor %}
+    </table>
+    <table>
+        <tr><td colspan="2"><b>new users</b></td></tr>
+        {% for user in new_users %}
+        <tr><td><a href="/profile/{{ user[1] }}" style="text-decoration: none;">{{ user[0] }}</a></td><td>{{ user[1] }}</td></tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+<div id="col-mid">
+    <table>
+        <tr><td><b>featured video</b></td></tr>
+        <tr><td><video src="/static/Back to friends.mov" controls width="400"></video> <br>
+        <span style="color: #6a7480;">you can comment on this <a href="/forum">here</a></span>
+        </td></tr>
+
+    </table>
+    <table>
+        <tr><td><b>featured forum post</b></td></tr>
+        
+        <tr><td><div style="word-break: break-word; white-space: pre-line;">{% if featured.content %}{{ featured.content | md | safe }}{% endif %}</div>
+        
+             - <a href="/profile/aibamc" style="text-decoration: none;">aibamc</a>
+        </td></tr>
+    </table>
+</div>
+<div id="col-right">
+    <table>
+        <tr><td><b>site counter</b></td></tr>
+        <tr><td>total homepage visits: {{ counter }}</td></tr>
+        <tr><td>total users: {{ counted_users }}</td></tr>
+        <tr><td>total bug reports open: {{ nfeedback }}</td></tr>
+    </table>
+    <table>
+        <tr><td colspan="2"><b>interesting/cool links</b></td></tr>
+        <tr><td>link</td><td>description</td></tr>
+        <tr><td><a href="https://awbw.amarriner.com/" style="color: #6a9ab8;">AWBW</a></td><td style="color: #6a7480;">guys please play this it's actually so peak</td></tr>
+        <tr><td><a href="https://www.youtube.com/watch?v=fVIUwpOWTYM" style="color: #6a9ab8;">A Public Stoning</a></td><td style="color: #6a7480;">new puscifer music video</td></tr>
+    </table>
+    <table>
+        <tr><td><b>featured art</b></td></tr>
+        <tr><td><span style="color: #6a7480;">please reach out to submit your art!</span></td></tr>
+    </table>
+</div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    function changeBlob() {
+        let blob = document.getElementById('blobPic')
+        if (blob.src.includes('/static/assets/blob.png')) {
+            blob.src = '/static/assets/blob2.png'
+        } else {
+            blob.src = '/static/assets/blob.png'
+        }
+    }
+</script>
+{% endblock %}
