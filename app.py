@@ -140,6 +140,25 @@ def index():
     tonline_users = len(online_users)
     online_users = online_users[:5]
 
+    all_users_sorted = sorted(users, key=lambda u: datetime.strptime(u['lastSeen'], '%d/%m/%y %H:%M:%S'), reverse=True)
+
+    active_users = []
+    for user in all_users_sorted[:5]:
+        last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
+        diff = datetime.now() - last_seen
+        if diff < timedelta(minutes=5):
+            status = 'online'
+        elif diff < timedelta(hours=1):
+            minutes = int(diff.total_seconds() // 60)
+            status = f'{minutes}m ago'
+        elif diff < timedelta(days=1):
+            hours = int(diff.total_seconds() // 3600)
+            status = f'{hours}h ago'
+        else:
+            days = diff.days
+            status = f'{days}d ago'
+        active_users.append({'username': user['username'], 'status': status})
+
     FEATURED_THREAD_ID = 6
 
     featured = Post.query.filter_by(thread_id=FEATURED_THREAD_ID).order_by(Post.created_at.asc()).first()
@@ -164,8 +183,29 @@ def index():
     
     nfeedback = len(feedback)
 
+    total_blackjack_wins = 0
+    total_numberspin_points = 0
+    with open('playergameinfo.json', 'r') as f:
+        game_info = json.load(f)
+    
+    with open('spininfo.json', 'r') as f:
+        spin_info = json.load(f)
+    
+    
+    for entry in game_info:
+        total_blackjack_wins += int(entry['bswins'])
+    
+    for entry in spin_info:
+        user_spin_points = 0
+        for score in entry['scores']:
+            user_spin_points += score
+        total_numberspin_points += user_spin_points
+
+
     return render_template('newindex.html', online_users=online_users, new_users=new_users, featured=featured, featured_thread=featured_thread, tonline_users=tonline_users, counter=visit_counter, counted_users=counted_users,
-                           nfeedback=nfeedback)
+                           nfeedback=nfeedback,
+                           active_users=active_users,
+                           total_blackjack_wins=total_blackjack_wins, total_numberspin_points=total_numberspin_points)
 
 @app.route('/oldpage')
 def old_page():
