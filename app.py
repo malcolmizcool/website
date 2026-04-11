@@ -45,6 +45,9 @@ pages = ["empty",
          "thanks",
          "newpost"]
 
+tz = pytz.timezone('Australia/Sydney')
+now = datetime.now(tz)
+
 @app.route('/<page>')
 def catch(page):
     if page in pages:
@@ -144,8 +147,8 @@ def index():
 
     active_users = []
     for user in all_users_sorted[:5]:
-        last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
-        diff = datetime.now() - last_seen
+        last_seen = tz.localize(datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S'))
+        diff = now - last_seen
         if diff < timedelta(minutes=5):
             status = 'online'
         elif diff < timedelta(hours=1):
