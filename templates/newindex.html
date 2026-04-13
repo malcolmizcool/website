@@ -60,13 +60,19 @@ td {
     <table style="flex: 1">
         <tr class="table_heading_background"><td colspan="2"><b><span class="table_heading_text">active users</span></b></td></tr>
         {% for user in active_users %}
+        {% if user['username'] != 'guest' %}
+        {% if user['username'] != 'admin' %}
         <tr class="{% if loop.index % 2 == 0 %} secondary_background {% else %} primary_background {% endif %}"><td><a href="/profile/{{ user['username'] }}" style="text-decoration: none;">{{ user['username'] }}</a></td><td>{% if user['status'] == 'online' %}<span style="color: #6aa888;">• online</span> {% else %} <span style="color: #6a7480;">last online {{ user['status'] }}</span> {% endif %}</td></tr>
+        {% endif %}
+        {% endif %}
         {% endfor %}
     </table>
     <table style="flex: 1;">
         <tr class="table_heading_background"><td colspan="2"><b><span class="table_heading_text">new users</span></b></td></tr>
         {% for user in new_users %}
+
         <tr class="{% if loop.index % 2 == 0 %} secondary_background {% else %} primary_background {% endif %}"><td><a href="/profile/{{ user[1] }}" style="text-decoration: none;">{{ user[0] }}</a></td><td>{{ user[1] }}</td></tr>
+
         {% endfor %}
     </table>
     </div>
@@ -102,6 +108,7 @@ td {
         <tr class="primary_background"><td>link</td><td>description</td></tr>
         <tr class="secondary_background"><td><a href="https://awbw.amarriner.com/" style="color: #6a9ab8;">AWBW</a></td><td style="color: #6a7480;">guys please play this it's actually so peak</td></tr>
         <tr class="primary_background"><td><a href="https://www.youtube.com/watch?v=fVIUwpOWTYM" style="color: #6a9ab8;">A Public Stoning</a></td><td style="color: #6a7480;">new puscifer music video</td></tr>
+        <tr class="secondary_background"><td><a href="https://www.instagram.com/p/DPRPqvoDuy7/" style="color: #6a9ab8;">thermos</a></td><td><span style="color: #6a7480;">picking out a thermos</span></td></tr>
     </table>
     <table style="width: 100%;">
         <tr class="table_heading_background"><td><b><span class="table_heading_text">featured art</span></b></td></tr>

@@ -45,8 +45,6 @@ pages = ["empty",
          "thanks",
          "newpost"]
 
-tz = pytz.timezone('Australia/Sydney')
-now = datetime.now(tz)
 
 @app.route('/<page>')
 def catch(page):
@@ -123,6 +121,9 @@ def update_last_seen():
 
 @app.route('/')
 def index():
+
+    tz = pytz.timezone('Australia/Sydney')
+    now = datetime.now(tz)
     with open('uandp.json', 'r') as f:
         users = json.load(f)
     
@@ -131,8 +132,8 @@ def index():
     all_users = []
 
     for user in users:
-        last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
-        online = datetime.now() - last_seen < timedelta(minutes=5)
+        last_seen = tz.localize(datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S'))
+        online = now - last_seen < timedelta(minutes=5)
         all_users.append(user['username'])
         if online:
             online_users.append(user['username'])
