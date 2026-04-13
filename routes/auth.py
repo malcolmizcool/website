@@ -152,7 +152,7 @@ def loginAccount():
     
 @auth.route('/logout')
 def logout():
-    session.pop('user', None)
+    session.clear()
     return redirect('/')
 
 @auth.route('/profile/<username>/uploadpfp', methods=['POST'])

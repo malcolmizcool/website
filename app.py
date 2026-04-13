@@ -127,6 +127,8 @@ def index():
     with open('uandp.json', 'r') as f:
         users = json.load(f)
     
+    excluded = ['admin', 'guest']
+
     online_users = []
     new_users = []
     all_users = []
@@ -144,7 +146,11 @@ def index():
     tonline_users = len(online_users)
     online_users = online_users[:5]
 
-    all_users_sorted = sorted(users, key=lambda u: datetime.strptime(u['lastSeen'], '%d/%m/%y %H:%M:%S'), reverse=True)
+    all_users_sorted = sorted(
+    [u for u in users if u['username'] not in excluded],
+    key=lambda u: datetime.strptime(u['lastSeen'], '%d/%m/%y %H:%M:%S'),
+    reverse=True
+)
 
     active_users = []
     for user in all_users_sorted[:5]:
@@ -158,9 +164,13 @@ def index():
         elif diff < timedelta(days=1):
             hours = int(diff.total_seconds() // 3600)
             status = f'{hours}h ago'
-        else:
+        elif diff < timedelta(days=30):
             days = diff.days
             status = f'{days}d ago'
+        else:
+            years = int(diff.total_seconds() //  (3.154 * 10 ** 7))
+            status = f'{years}y ago'
+            
         active_users.append({'username': user['username'], 'status': status})
 
     FEATURED_THREAD_ID = 6

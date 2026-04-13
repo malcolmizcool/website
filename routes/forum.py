@@ -4,6 +4,7 @@ from models import Thread, Post
 import json
 from datetime import datetime, timedelta
 import uuid
+import pytz
 
 forum = Blueprint('forum', __name__)
 
@@ -101,10 +102,13 @@ def thread_page(board, thread_id):
     for user in users:
         role = user['role'] 
         roles[user['username']] = role
+    tz = pytz.timezone('Australia/Sydney')
+    now = datetime.now(tz)
+
     online_status = {}
     for user in users:
-        last_online = datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S")
-        status = datetime.now() - last_online < timedelta(minutes=5)
+        last_online = tz.localize(datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S"))
+        status = now - last_online < timedelta(minutes=5)
         online_status[user['username']] = status
     return render_template('forum/thread.html', thread=thread, posts=posts, board=BOARDS[board], slug=board, roles=roles, online_status=online_status)
 
