@@ -25,11 +25,6 @@
         <div style=" display: flex; flex-direction: column; width: 150px; min-width: 150px; align-items: center;">
             <a href="/profile/{{ entry.name }}"><img src="/static/avatars/{{ entry.name }}.png" onerror="this.src='/static/avatars/default.png'" height="100" style="width: 100px; height: 100px; object-fit: cover"></a> 
             <b><a href="/profile/{{ entry.name }}"><span class="role-{{ roles.get(entry.name, 'user') }}">{{ entry.name }}</span></a></b>
-            <span>
-                {% if online_status.get(entry.name) %}
-                    <span style="color: green;">● online</span>
-                {% endif %}
-            </span>
         </div>
         <div style="flex: 1; padding-left: 16px; border-left: 1px solid #ccc; position: relative; word-break: break-word">
             <span style="color: grey; font-size: 0.85em;">{{ entry.date }}</span><br>
