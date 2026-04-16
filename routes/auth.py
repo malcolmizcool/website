@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime, timedelta
+import pytz
 import os
 from werkzeug.utils import secure_filename
 from helpers import get_achievements, award_achievement, get_flairs
@@ -71,8 +72,10 @@ def profile(username):
 
     if session.get('user') and session['user'] != username and username == "picklez_gaming":
         award_achievement(session['user'], 'visit_pickle')
-    last_seen = datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S')
-    online = datetime.now() - last_seen < timedelta(minutes=5)
+    tz = pytz.timezone('Australia/Sydney')
+    now = datetime.now(tz)
+    last_seen = tz.localize(datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S")) 
+    online = now - last_seen < timedelta(minutes=5)
     achieved_achievements = len(user_achievements)
     total_achievements = len(alist)
     fraction = f"{achieved_achievements}/{total_achievements}"
