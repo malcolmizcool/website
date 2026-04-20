@@ -112,6 +112,16 @@ def thread_page(board, thread_id):
         online_status[user['username']] = status
     return render_template('forum/thread.html', thread=thread, posts=posts, board=BOARDS[board], slug=board, roles=roles, online_status=online_status)
 
+@forum.route('/forum/<board>/<int:thread_id>/<int:post_id>/like', methods=['POST'])
+def like(board, thread_id, post_id):
+    if not session.get('user'):
+        return redirect('/login')
+    thread = Thread.query.get(thread_id)
+    post = Post.query.get(post_id)
+    post.response += 1
+    db.session.commit()
+    return redirect(f'/forum/{board}/{thread_id}')
+
 @forum.route('/forum/<board>/<int:thread_id>/reply', methods=['POST'], strict_slashes=False)
 def reply(board, thread_id):
     if not session.get('user'):

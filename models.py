@@ -21,3 +21,4 @@ class Post(db.Model):
     author = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=sydney_time)
+    response = db.Column(db.Integer, default=0) 
