@@ -145,3 +145,25 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 }
+
+#important_links {
+    color: #6a9ab8;
+}
+td {
+    border: none;
+}
+
+.table_heading_background {
+    background: #444444
+}
+.table_heading_text {
+    color: white;
+}
+
+.secondary_background {
+    background: #e0e0e0;
+}
+
+.primary_background {
+    background: #ebebeb
+}

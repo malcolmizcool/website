@@ -95,12 +95,8 @@ def profile(username):
     if len(user_flairs) >= 1:
         show_flairs = True
 
-    print('user flairs:')
-    print(user_flairs)
-    print('flair list')
-    print(flist)
 
-    return render_template('profile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs)
+    return render_template('newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
@@ -147,7 +143,6 @@ def loginAccount():
                 if username == detail['username'] and check_password_hash(detail['password'], password):
                     session['user'] = username
                     session['role'] = detail['role']
-                    print(detail)
                     return redirect('/')
             return f"error <br> <a href={"/"}>Go Home</a>"
     except FileNotFoundError:

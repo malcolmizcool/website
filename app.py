@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, session
 
 import json
 from datetime import datetime, timedelta
+from flask_migrate import Migrate
 import pytz
 import uuid
 from flask_sqlalchemy import SQLAlchemy
@@ -29,6 +30,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+migrate = Migrate(app, db)
 
 app.register_blueprint(auth)
 app.register_blueprint(blog)
@@ -114,7 +116,6 @@ def update_last_seen():
             if user['username'] == session['user']:
                 tz = pytz.timezone('Australia/Sydney')
                 user['lastSeen'] = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
-                print(user['lastSeen'])
                 break
         with open('uandp.json', 'w') as f:
             json.dump(users, f)
@@ -294,8 +295,6 @@ def format_time(value):
     dt = datetime.fromisoformat(value)
     return dt.strftime('%d %B %Y, %I:%M %p')
 
-with app.app_context():
-    db.create_all()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Profile {% endblock %}
+{% block extra_styles %}
+{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: center;">
+<div style="display: flex;">
+<div class="col-left" style="padding: 5px;">
+<table style="width: 100%;">
+    <tr class="table_heading_background"><td class="table_heading_text"> <b>{{ username }}</b> </td></tr>
+    <tr><td class="primary_background"><img src="/static/avatars/{{ username }}" onerror="this.src='/static/avatars/default.png'" style="width: 150px; height: 150px; object-fit: cover"> <br>
+    {% if online %}
+    <span style="color: #6aa888;"><b>online</b></span> <br>
+    {% endif %}
+    <span>Account created: {{ user['accountDate']}}</span> <br>
+    {% if session.get('user') != username %}
+        <a><button disabled>add friend</button></a>
+    {% else %}
+        <a href="/logout"><button>logout</button></a>
+    {% endif %}
+    </td></tr>
+    <tr class="secondary_background"><td>{{ user['bio'] }} <br>
+    {% if session.get('user') == username %}
+    <a href="/bio/{{ username }}"><button>edit bio</button></a>
+    {% endif %}
+    </td></tr>
+</table>
+</div>
+<div class="col-mid" style="padding: 5px;"> 
+<table style="width: 100%;">
+    <tr class="table_heading_background"><td class="table_heading_text"><span style="{% if percentage == 100 %}color: #6aa888 {% endif %}"><b>achievements - {{ fraction }} ({{ percentage }}%)</b></span></td></tr>
+    {% for achievement in achievements %}
+        {% for a in achievement_list %}
+            {% if achievement == a.id %}
+                <tr class="{% if loop.index %2 == 0 %}secondary_background {% else %} primary_background {% endif %}"><td><span class="rarity-{{ a.rarity }}" style="cursor: default;">{{ a.name }}</span> - {{ a.description }}</td></tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</table>
+{% if show_flairs %}
+<table style="width: 100%;">
+    <tr class="table_heading_background"><td class="table_heading_text"><b>flairs</b></td></tr>
+    {% for flair in flairs %}
+        {% for f in flair_list %}
+            {% if flair == f.id %}
+                <tr class="{% if loop.index %2 == 0 %}secondary_background{% else %}primary_background{% endif %}"><td><span class="rarity-{{ f.rarity }}" style="cursor: default;">{{ f.name }}</span> - {{ f.description }}</td></tr>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</table>
+{% endif %}
+</div>
+<div class="col-right" style="padding: 5px;">
+    <table style="width: 100%;">
+        <tr class="table_heading_background"><td class="table_heading_text"><b>game stats</b></td></tr>
+        <tr><td><b>blackjack</b></td></tr>
+        <tr class="primary_background"><td>wins: {{ player['bswins']}}</td></tr>
+        <tr class="secondary_background"><td>blackjacks: {{ player['tblackjacks'] }}</td></tr>
+        <tr><td><b>numberspin</b></td></tr>
+        <tr class="primary_background"><td>highscore: {{score}}</td></tr>
+    </table>
+</div>
+</div>
+</div>
+{% endblock %}
