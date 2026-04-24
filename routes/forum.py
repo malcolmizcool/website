@@ -9,7 +9,7 @@ import pytz
 forum = Blueprint('forum', __name__)
 
 BOARDS = {
-    'announcements': {'name': 'Announcements', 'description': 'Site updates and news', 'restricted': True},
+    'announcements': {'name': 'Announcements', 'description': 'Site updates and news', 'restricted': False},
     'general': {'name': 'General', 'description': 'General discourse', 'restricted': False},
     'games': {'name': 'Games', 'description': 'Regarding games', 'restricted': False},
     'feedback': {'name': 'Feedback', 'description': 'Suggestions and ideas for the future of this site', 'restricted': False},
