@@ -179,15 +179,23 @@ def index():
     featured = Post.query.filter_by(thread_id=FEATURED_THREAD_ID).order_by(Post.created_at.asc()).first()
     featured_thread = Thread.query.get(FEATURED_THREAD_ID)
 
-    # try:
-    #     with open('counter.json', 'r') as f:
-    #         counter = json.load(f)
-    # except:
-    #     counter = {'landing_page': "error"}
+    try:
+        with open('counter.json', 'r') as f:
+            counter = json.load(f)
+        visit_counter = int(counter['landing_page']) + 1
+        counter['landing_page'] = str(visit_counter)
+    except FileNotFoundError:
+        counter = {'landing_page': 300}
+        visit_counter = 300
+    except:
+        counter = {'landing_page': "error"}
+        visit_counter = 'error'
     
 
 
-    visit_counter = "error"
+    with open('counter.json', 'w') as f:
+        json.dump(counter, f)
+
     counted_users = len(all_users)
 
 
