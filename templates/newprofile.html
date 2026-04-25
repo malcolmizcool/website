@@ -33,7 +33,7 @@
     {% endif %}
     <span>Account created: {{ user['accountDate']}}</span> <br>
     {% if session.get('user') != username %}
-        <a><button disabled>add friend</button></a>
+
     {% else %}
         <a href="/logout"><button>logout</button></a>
     {% endif %}
