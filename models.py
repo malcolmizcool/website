@@ -22,3 +22,9 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=sydney_time)
     response = db.Column(db.Integer, default=0) 
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String, nullable = False)
+    number_of_pokes = db.Column(db.Integer, nullable = False, default=0)
+    profile_background_image = db.Column(db.String, default=None)

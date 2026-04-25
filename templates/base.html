@@ -17,6 +17,7 @@
             text-decoration: none;
             color: black;
         }
+
     </style>
     {% endblock %}
     {% block extra_styles %} {% endblock %}
@@ -51,8 +52,10 @@
         </div>
     </div>
     <hr>
+    <div id="below-nav" style="min-height: 100vh;">
     <div id="content" style="max-width: 1300; margin: 0 auto; padding: 0 16px;">{% block content %}{% endblock %}</div>
       {% block extra_scripts %} {% endblock %}
+    </div>
   </body>
 
 </html>

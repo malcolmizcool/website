@@ -19,9 +19,20 @@
         display: none;
     }
 
+    {% if image %}
+    #below-nav {
+        background-image: url("/static/assets/{{ image }}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        image-rendering: pixelated;
+    }
+    {% endif %}
+
 </style>
 {% endblock %}
 {% block content %}
+<div class="user-background">
 <div style="display: flex; justify-content: center;">
 <div style="display: flex;">
 <div class="col-left" style="padding: 5px;">
@@ -32,16 +43,23 @@
     <span style="color: #6aa888;"><b>online</b></span> <br>
     {% endif %}
     <span>Account created: {{ user['accountDate']}}</span> <br>
+    <span>Total pokes: {{ total_pokes }}</span> <br>
     {% if session.get('user') != username %}
+        <a><button disabled>add friend</button></a>
+        {% if pokeable %}
+        <form action="/profile/{{ username }}/poke", method="POST">
+        <input type="hidden" id="user" name="user" value="{{ session.get('user') }}">
+        <input type="submit" value="Poke!" style="cursor: pointer;">
+        </form>
 
-    {% else %}
-        <a href="/logout"><button>logout</button></a>
-    {% endif %}
+        {% endif%}
+
+        {% endif %}
+        
+
     </td></tr>
     <tr class="secondary_background"><td style="word-wrap: break-word; overflow-wrap: break-word;">{{ user['bio'] }} <br>
-    {% if session.get('user') == username %}
-    <a href="/bio/{{ username }}"><button>edit bio</button></a>
-    {% endif %}
+
     </td></tr>
 </table>
 </div>
@@ -83,12 +101,17 @@
 <div class="col-right" style="padding: 5px;">
     <table style="width: 100%;">
         <tr class="table_heading_background"><td class="table_heading_text"><b>game stats</b></td></tr>
-        <tr><td><b>blackjack</b></td></tr>
+        <tr style="background-color: white;"><td><b>blackjack</b></td></tr>
         <tr class="primary_background"><td>wins: {{ player['bswins']}}</td></tr>
         <tr class="secondary_background"><td>blackjacks: {{ player['tblackjacks'] }}</td></tr>
-        <tr><td><b>numberspin</b></td></tr>
+        <tr style="background-color: white;"><td><b>numberspin</b></td></tr>
         <tr class="primary_background"><td>highscore: {{score}}</td></tr>
     </table>
+    {% if username == session.get('user') %}
+    <a href="/bio/{{ username }}"><button style="margin-left: 5px; width: 100%;">Settings</button></a> <br>
+    <a href="/logout"><button style="margin-left: 5px; width: 100%;">Logout</button></a>
+    {% endif %}
+</div>
 </div>
 </div>
 </div>
