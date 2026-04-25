@@ -1,12 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Admin{% endblock %}
 {% block content %}
-
-Add/change your bio here: <br> <br> <br>
-<form action="/bio/{{ session.get('user') }}/change" method="POST">
-    <label for="bio">New bio:</label>
-    <textarea type="text" id="bio" name="bio" rows="4" cols="50"></textarea> <br> <br>
-    <input type="submit" class="buttonthing">
-</form> 
+<div style="display: flex;">
+<div>
+<table>
+<tr class="table_heading_background"><td class="table_heading_text"><b>Update Bio</b> </td></tr>
+<tr>
+    <td>
+        <form action="/bio/{{ session.get('user') }}/change" method="POST">
+            <label for="bio">New bio:</label>
+            <textarea type="text" id="bio" name="bio" rows="4" cols="50"></textarea> <br> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </td>
+</tr>
+</table>
+<table>
+    <tr class="table_heading_background"><td class="table_heading_text"><b>Profile Background</b></td></tr>
+    <tr><td>
+        {% for image in background_images %}
+            <form action="/backgroundimage/{{ session.get('user') }}" method="POST">
+                <input type="hidden" name="source" value="{{ image }}">
+                <input type="image" name="image" src="/static/assets/{{ image }}">
+            </form>
+        {% endfor %}
+    </td></tr>
+</table>
+</div>
+    <table>
+        <tr class="table_heading_background"><td class="table_heading_text"><b>Change Profile Picture</b></td></tr>
+        <tr><td>    <form action="/profile/{{ session.get('user') }}/uploadpfp" method="POST" enctype="multipart/form-data">
+    <input type="file" name="pfp" accept="image/*" > <br>
+    <input type="submit" value="Upload" class="buttonthing">
+    </form></td></tr>
+    </table>
+</div>
 
 {% endblock %}

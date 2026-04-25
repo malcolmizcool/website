@@ -4,8 +4,13 @@ import json
 from datetime import datetime, timedelta
 import pytz
 import os
+import uuid
 from werkzeug.utils import secure_filename
 from helpers import get_achievements, award_achievement, get_flairs
+from models import User
+from extensions import db
+
+background_images = ['background1.png', 'background2.png']
 
 auth = Blueprint('auth', __name__)
 
@@ -24,7 +29,21 @@ def bio(username):
     if username != session.get('user'):
         return 'get lost'
     else:
-        return render_template('biopage.html', user=user)
+        return render_template('biopage.html', user=user, background_images=background_images)
+
+@auth.route('/backgroundimage/<username>', methods=['GET', 'POST'])
+def change_background_image(username):
+    if request.method == 'GET':
+        return "hmm you shouldnt be here..."
+    if request.method == 'POST':
+        image = request.form['source']
+
+        user = User.query.filter_by(user=username).first()
+        if user:
+            user.profile_background_image = image
+            db.session.commit()
+        
+        return redirect(f'/bio/{username}')
 
 @auth.route('/bio/<username>/change', methods=['POST'])
 def change_bio(username):
@@ -96,7 +115,26 @@ def profile(username):
         show_flairs = True
 
 
-    return render_template('newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs)
+    pokeable = False
+    if session.get('user') and session.get('user') != username:
+        last_poke = session.get(f'last_poke_{username}')
+        if last_poke:
+            last_poke_time = datetime.fromisoformat(last_poke)
+            tz = pytz.timezone('Australia/Sydney')
+            if datetime.now(tz) - last_poke_time >= timedelta(days=1):
+                pokeable = True
+        else:
+            pokeable = True
+
+    db_user = User.query.filter_by(user=username).first()
+    if db_user:
+        total_pokes = db_user.number_of_pokes
+
+    image = db_user.profile_background_image
+
+    return render_template('newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs,
+                           pokeable=pokeable,
+                           total_pokes=total_pokes, image=image)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():
@@ -130,6 +168,24 @@ def createAccount():
         json.dump(details, f)
     session['user'] = username
     session['role'] = detail['role']
+
+    with open('notifications.json', 'r') as f:
+        notifications = json.load(f)
+    
+    new_entry = {
+        "user": username,
+        "notifications": []
+    }
+
+    notifications.append(new_entry)
+
+    with open('notifications.json', 'w') as f:
+        json.dump(notifications, f)
+    
+    new_user = User(user=username, number_of_pokes = 0)
+    db.session.add(new_user)
+    db.session.commit()
+
     return redirect('/')
 
 @auth.route('/loginAccount', methods=['POST'])
@@ -168,6 +224,44 @@ def uploadpfp(username):
         file.save(os.path.join('static/avatars', filename))
     
     return redirect(f'/profile/{username}')
+
+@auth.route('/profile/<username>/poke', methods=['GET', 'POST'])
+def poke(username):
+    if request.method == 'GET':
+        return("stop trying to cheat the system 🙄")
+    if request.method == 'POST':
+        poker = request.form['user']
+        with open('notifications.json', 'r') as f:
+            notifications = json.load(f)
+
+        for entry in notifications:
+            if entry['user'] == username:
+                user_notifications = entry['notifications'] 
+
+        tz = pytz.timezone('Australia/Sydney')
+        time = datetime.now(tz).isoformat()
+        new_notification = {
+            "id": str(uuid.uuid4()),
+            "title": "New poke!",
+            "message": f"{poker} just poked you! You should poke them back.",
+            "time": time,
+            "is_read": False,
+            "type": None
+        }
+        user_notifications.append(new_notification)
+        with open('notifications.json', 'w') as f:
+            json.dump(notifications, f)
+        
+        session[f'last_poke_{username}'] = datetime.now(pytz.timezone('Australia/Sydney')).isoformat()
+
+        poked_user = User.query.filter_by(user=username).first()
+        if poked_user:
+            poked_user.number_of_pokes += 1
+            db.session.commit()
+
+
+
+        return redirect(f'/profile/{username}')
 
 @auth.route('/notifications')
 def show_notifications():
