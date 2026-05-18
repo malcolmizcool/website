@@ -6,7 +6,7 @@ import pytz
 import os
 import uuid
 from werkzeug.utils import secure_filename
-from helpers import get_achievements, award_achievement, get_flairs
+from helpers import get_achievements, award_achievement, get_flairs, calculate_level, xp_needed
 from models import User
 from extensions import db
 
@@ -21,6 +21,7 @@ def register():
 def login():
     return render_template('login.html')
 
+
 @auth.route('/bio/<username>')
 def bio(username):
     with open('uandp.json', 'r') as f:
@@ -29,6 +30,9 @@ def bio(username):
     if username != session.get('user'):
         return 'get lost'
     else:
+        db_user = User.query.filter_by(user=username).first()
+        background_images = json.loads(db_user.unlocked_backgrounds or '[]')
+        print(background_images)
         return render_template('biopage.html', user=user, background_images=background_images)
 
 @auth.route('/backgroundimage/<username>', methods=['GET', 'POST'])
@@ -43,7 +47,7 @@ def change_background_image(username):
             user.profile_background_image = image
             db.session.commit()
         
-        return redirect(f'/bio/{username}')
+        return redirect(f'/profile/{username}')
 
 @auth.route('/bio/<username>/change', methods=['POST'])
 def change_bio(username):
@@ -86,7 +90,6 @@ def profile(username):
     
     with open('flair_list.json', 'r') as f:
         flist = json.load(f)
-    
 
 
     if session.get('user') and session['user'] != username and username == "picklez_gaming":
@@ -129,12 +132,17 @@ def profile(username):
     db_user = User.query.filter_by(user=username).first()
     if db_user:
         total_pokes = db_user.number_of_pokes
+        xp = db_user.xp
+        user_level, level_xp, user_xp_needed = calculate_level(xp)
 
     image = db_user.profile_background_image
 
+
+
     return render_template('newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs,
                            pokeable=pokeable,
-                           total_pokes=total_pokes, image=image)
+                           total_pokes=total_pokes, image=image,
+                            user_level=user_level, level_xp=level_xp, user_xp_needed=user_xp_needed)
 
 @auth.route('/createAccount', methods=['POST'])
 def createAccount():

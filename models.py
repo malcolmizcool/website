@@ -28,3 +28,5 @@ class User(db.Model):
     user = db.Column(db.String, nullable = False)
     number_of_pokes = db.Column(db.Integer, nullable = False, default=0)
     profile_background_image = db.Column(db.String, default=None)
+    unlocked_backgrounds = db.Column(db.String, default='[]')
+    xp = db.Column(db.Integer, default=0)

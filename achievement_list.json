@@ -1,1 +1,29 @@
-[{"id": "bj_100_wins", "name": "Apprentice", "description": "Win 100 solo blackjack games", "rarity": "common"}, {"id": "visit_pickle", "name": "Number 1 Fan!", "description": "visit picklez_gaming's profile", "rarity": "rare"}, {"id": "21_blackjack", "name": "Super Blackjack", "description": "Get 21 blackjacks!", "rarity": "uncommon"}]
+[
+    {
+        "id": "bj_100_wins",
+        "name": "Apprentice",
+        "description": "Win 100 solo blackjack games",
+        "rarity": "common",
+        "reward": "None",
+        "source": "None",
+        "reward_message": "None"
+    },
+    {
+        "id": "visit_pickle",
+        "name": "Number 1 Fan!",
+        "description": "visit picklez_gaming's profile",
+        "rarity": "rare",
+        "reward": "profile_background",
+        "source": "pickle.png",
+        "reward_message": "Pickles style profile background"
+    },
+    {
+        "id": "21_blackjack",
+        "name": "Super Blackjack",
+        "description": "Get 21 blackjacks!",
+        "rarity": "uncommon",
+        "reward": "None",
+        "source": "None",
+        "reward_message": "None"
+    }
+]
