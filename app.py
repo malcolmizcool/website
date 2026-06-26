@@ -109,16 +109,17 @@ def render_md(text):
 def update_last_seen():
     if request.path.startswith('/static'):
         return  
-    if session.get('user'):
-        with open('uandp.json', 'r') as f:
-            users = json.load(f)
-        for user in users:
-            if user['username'] == session['user']:
-                tz = pytz.timezone('Australia/Sydney')
-                user['lastSeen'] = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
-                break
-        with open('uandp.json', 'w') as f:
-            json.dump(users, f)
+    # if session.get('user'):
+    #     with open('uandp.json', 'r') as f:
+    #         users = json.load(f)
+    #     for user in users:
+    #         if user['username'] == session['user']:
+    #             tz = pytz.timezone('Australia/Sydney')
+    #             user['lastSeen'] = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
+    #             break
+    #     with open('uandp.json', 'w') as f:
+    #         json.dump(users, f)
+    return render_template('error.html')
 
 @app.route('/')
 def index():
