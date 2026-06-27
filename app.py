@@ -119,7 +119,7 @@ def update_last_seen():
     #             break
     #     with open('uandp.json', 'w') as f:
     #         json.dump(users, f)
-    if request.path.startswith('/loginAccount'):
+    if request.path.startswith('/login'):
         return
     if session.get('user') != 'malcolm':
         return render_template('error.html')
