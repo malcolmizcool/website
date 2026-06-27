@@ -119,7 +119,10 @@ def update_last_seen():
     #             break
     #     with open('uandp.json', 'w') as f:
     #         json.dump(users, f)
-    return render_template('error.html')
+    if request.path.startswith('/loginAccount'):
+        return
+    if session.get('user') != 'malcolm':
+        return render_template('error.html')
 
 @app.route('/')
 def index():
