@@ -26,7 +26,19 @@ class Post(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String, nullable = False)
+    password = db.Column(db.String, nullable=True)
+    bio = db.Column(db.Text, default='')
+    pfp = db.Column(db.String, default='None')
+    role = db.Column(db.String, default='user')
+    accountDate = db.Column(db.String, default='')
+    verified = db.Column(db.Boolean, default=False)
+    lastSeen = db.Column(db.String, default='')
     number_of_pokes = db.Column(db.Integer, nullable = False, default=0)
     profile_background_image = db.Column(db.String, default=None)
     unlocked_backgrounds = db.Column(db.String, default='[]')
     xp = db.Column(db.Integer, default=0)
+
+    @property
+    def username(self):
+        # Alias so templates using user.username / user['username'] keep working
+        return self.user

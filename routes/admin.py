@@ -5,6 +5,8 @@ import os
 from helpers import award_achievement, award_flair
 import uuid
 import pytz
+from models import User
+from extensions import db
 
 admin = Blueprint('admin', __name__)
 
@@ -51,36 +53,16 @@ def migrategame():
 def migrate_uandp():
     if session.get('user') != 'malcolm':
         return "nope"
-    return render_template('migrateuandp.html')
-
-@admin.route('/admin/migrateuandp', methods=['POST'])
-def migrateuandp():
-    newfield = request.form['newfield']
-    default_value = request.form['value']
-    
-    with open('uandp.json', 'r') as f:
-        players = json.load(f)
-    
-    for player in players:
-        if newfield not in player:
-            player[newfield] = default_value
-    
-    with open('uandp.json', 'w') as f:
-        json.dump(players, f)
-    
-    return f"done <a href='/admin'>do another</a>"
+    return "User accounts now live in the database, not uandp.json, so this bulk field-adder no longer applies. To add a new field to all users, add a column to the User model in models.py and run a database migration instead. <a href='/admin'>Back</a>"
 
 @admin.route('/admin/userrank', methods=['POST'])
 def user_rank():
     username = request.form['user']
     rank = request.form['newrank']
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    for user in users:
-        if user['username'] == username:
-            user['role'] = rank
-    with open('uandp.json', 'w') as f:
-        json.dump(users, f)
+    user = User.query.filter_by(user=username).first()
+    if user:
+        user.role = rank
+        db.session.commit()
     return redirect('/admin')
 
 @admin.route('/admin/feedback')
@@ -105,8 +87,7 @@ def delete_feedback():
 
 @admin.route('/admin/users')
 def show_users():
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
+    users = User.query.all()
     return render_template('adminusers.html', users=users)
 
 @admin.route('/admin/achievement/add', methods=['POST'])
@@ -263,11 +244,7 @@ def send_universal_notification():
     tz = pytz.timezone('Australia/Sydney')
     time = datetime.now(tz).isoformat()
 
-    try:
-        with open('uandp.json', 'r') as f:
-            users = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        users = []
+    users = User.query.all()
 
     try:
         with open('notifications.json', 'r') as f:
@@ -285,9 +262,9 @@ def send_universal_notification():
     }
 
     for user in users:
-        entry = next((e for e in notifications if e['user'] == user['username']), None)
+        entry = next((e for e in notifications if e['user'] == user.user), None)
         if entry is None:
-            entry = {'user': user['username'], 'notifications': []}
+            entry = {'user': user.user, 'notifications': []}
             notifications.append(entry)
         entry['notifications'].append(new_notification)
 

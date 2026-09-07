@@ -11,7 +11,7 @@ from pymdownx import emoji
 import bleach, markdown
 from extensions import db
 import sys
-from models import Thread, Post
+from models import Thread, Post, User
 
 
 from routes.auth import auth
@@ -108,30 +108,26 @@ def render_md(text):
 @app.before_request
 def update_last_seen():
     if request.path.startswith('/static'):
-        return  
-    # if session.get('user'):
-    #     with open('uandp.json', 'r') as f:
-    #         users = json.load(f)
-    #     for user in users:
-    #         if user['username'] == session['user']:
-    #             tz = pytz.timezone('Australia/Sydney')
-    #             user['lastSeen'] = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
-    #             break
-    #     with open('uandp.json', 'w') as f:
-    #         json.dump(users, f)
-    if request.path.startswith('/login'):
         return
-    if session.get('user') != 'malcolm':
-        return render_template('error.html')
+    if session.get('user'):
+        db_user = User.query.filter_by(user=session['user']).first()
+        if db_user is None:
+            db_user = User(user=session['user'], number_of_pokes=0)
+            db.session.add(db_user)
+        tz = pytz.timezone('Australia/Sydney')
+        db_user.lastSeen = datetime.now(tz).strftime('%d/%m/%y %H:%M:%S')
+        db.session.commit()
 
 @app.route('/')
 def index():
 
     tz = pytz.timezone('Australia/Sydney')
     now = datetime.now(tz)
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    
+    users = User.query.all()
+    # Only consider accounts that actually completed sign-up (have a password
+    # and a lastSeen/accountDate set) so half-created rows don't blow up the sorting below.
+    users = [u for u in users if u.password and u.lastSeen and u.accountDate]
+
     excluded = ['admin', 'guest']
 
     online_users = []
@@ -139,27 +135,27 @@ def index():
     all_users = []
 
     for user in users:
-        last_seen = tz.localize(datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S'))
+        last_seen = tz.localize(datetime.strptime(user.lastSeen, '%d/%m/%y %H:%M:%S'))
         online = now - last_seen < timedelta(minutes=5)
-        all_users.append(user['username'])
+        all_users.append(user.user)
         if online:
-            online_users.append(user['username'])
+            online_users.append(user.user)
 
-    new_users = sorted(users, key=lambda u: datetime.strptime(u['accountDate'], '%d/%m/%y'), reverse=True)
-    new_users = [[u['username'], u['accountDate']] for u in new_users[:5]]
+    new_users = sorted(users, key=lambda u: datetime.strptime(u.accountDate, '%d/%m/%y'), reverse=True)
+    new_users = [[u.user, u.accountDate] for u in new_users[:5]]
 
     tonline_users = len(online_users)
     online_users = online_users[:5]
 
     all_users_sorted = sorted(
-    [u for u in users if u['username'] not in excluded],
-    key=lambda u: datetime.strptime(u['lastSeen'], '%d/%m/%y %H:%M:%S'),
+    [u for u in users if u.user not in excluded],
+    key=lambda u: datetime.strptime(u.lastSeen, '%d/%m/%y %H:%M:%S'),
     reverse=True
 )
 
     active_users = []
     for user in all_users_sorted[:5]:
-        last_seen = tz.localize(datetime.strptime(user['lastSeen'], '%d/%m/%y %H:%M:%S'))
+        last_seen = tz.localize(datetime.strptime(user.lastSeen, '%d/%m/%y %H:%M:%S'))
         diff = now - last_seen
         if diff < timedelta(minutes=5):
             status = 'online'
@@ -176,7 +172,7 @@ def index():
             years = int(diff.total_seconds() //  (3.154 * 10 ** 7))
             status = f'{years}y ago'
             
-        active_users.append({'username': user['username'], 'status': status})
+        active_users.append({'username': user.user, 'status': status})
 
     FEATURED_THREAD_ID = 6
 
