@@ -31,6 +31,10 @@ def bio(username):
         return 'get lost'
     else:
         db_user = User.query.filter_by(user=username).first()
+        if db_user is None:
+            db_user = User(user=username, number_of_pokes=0)
+            db.session.add(db_user)
+            db.session.commit()
         background_images = json.loads(db_user.unlocked_backgrounds or '[]')
         print(background_images)
         return render_template('biopage.html', user=user, background_images=background_images)
@@ -130,11 +134,14 @@ def profile(username):
             pokeable = True
 
     db_user = User.query.filter_by(user=username).first()
-    if db_user:
-        total_pokes = db_user.number_of_pokes
-        xp = db_user.xp
-        user_level, level_xp, user_xp_needed = calculate_level(xp)
+    if db_user is None:
+        db_user = User(user=username, number_of_pokes=0)
+        db.session.add(db_user)
+        db.session.commit()
 
+    total_pokes = db_user.number_of_pokes
+    xp = db_user.xp
+    user_level, level_xp, user_xp_needed = calculate_level(xp)
     image = db_user.profile_background_image
 
 
