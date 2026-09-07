@@ -24,9 +24,6 @@ def login():
 
 @auth.route('/bio/<username>')
 def bio(username):
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    user = next((u for u in users if u['username'] == username), None)
     if username != session.get('user'):
         return 'get lost'
     else:
@@ -37,7 +34,7 @@ def bio(username):
             db.session.commit()
         background_images = json.loads(db_user.unlocked_backgrounds or '[]')
         print(background_images)
-        return render_template('biopage.html', user=user, background_images=background_images)
+        return render_template('biopage.html', user=db_user, background_images=background_images)
 
 @auth.route('/backgroundimage/<username>', methods=['GET', 'POST'])
 def change_background_image(username):
@@ -55,25 +52,21 @@ def change_background_image(username):
 
 @auth.route('/bio/<username>/change', methods=['POST'])
 def change_bio(username):
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
     if username != session.get('user'):
         return 'get lost'
     bio = request.form['bio']
-    for u in users:
-        if u['username'] == username:
-            u['bio'] = bio
-            break
-    with open('uandp.json', 'w') as f:
-        json.dump(users, f)
+    db_user = User.query.filter_by(user=username).first()
+    if db_user is None:
+        db_user = User(user=username, number_of_pokes=0)
+        db.session.add(db_user)
+    db_user.bio = bio
+    db.session.commit()
     return redirect(f'/profile/{username}')
 
 
 @auth.route('/profile/<username>')
 def profile(username):
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    user = next((u for u in users if u['username'] == username), None)
+    user = User.query.filter_by(user=username).first()
     if user is None:
         return "user not found", 404
     
@@ -100,12 +93,12 @@ def profile(username):
         award_achievement(session['user'], 'visit_pickle')
     tz = pytz.timezone('Australia/Sydney')
     now = datetime.now(tz)
-    last_seen = tz.localize(datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S")) 
+    last_seen = tz.localize(datetime.strptime(user.lastSeen, "%d/%m/%y %H:%M:%S")) if user.lastSeen else now
     online = now - last_seen < timedelta(minutes=5)
     achieved_achievements = len(user_achievements)
     total_achievements = len(alist)
     fraction = f"{achieved_achievements}/{total_achievements}"
-    percentage = (achieved_achievements/total_achievements)*100
+    percentage = (achieved_achievements/total_achievements)*100 if total_achievements else 0
     percentage = round(percentage, 2)
 
     with open('spininfo.json', 'r') as f:
@@ -133,16 +126,10 @@ def profile(username):
         else:
             pokeable = True
 
-    db_user = User.query.filter_by(user=username).first()
-    if db_user is None:
-        db_user = User(user=username, number_of_pokes=0)
-        db.session.add(db_user)
-        db.session.commit()
-
-    total_pokes = db_user.number_of_pokes
-    xp = db_user.xp
+    total_pokes = user.number_of_pokes
+    xp = user.xp
     user_level, level_xp, user_xp_needed = calculate_level(xp)
-    image = db_user.profile_background_image
+    image = user.profile_background_image
 
 
 
@@ -155,34 +142,33 @@ def profile(username):
 def createAccount():
     username = request.form['username']
     password = request.form['password']
-    try:
-        with open('uandp.json', 'r') as f:
-            details = json.load(f)
-            for detail in details:
-                if username == detail['username']:
-                    return f"error <br> <a href={"/"}><button style={"cursor: pointer"}>Go Home</button></a>"
-    except FileNotFoundError:
-        details = []
-    date = datetime.now().strftime('%d/%m/%y')
-    detail = {
-        'username': username,
-        'password': generate_password_hash(password),
-        'bio': "",
-        'pfp': "None",
-        'role': "user",
-        'accountDate': f"{date}",
-        'verified': "False",
-        'lastSeen': datetime.now().strftime('%d/%m/%y %H:%M:%S'),
-        'xp': 0
-    }
 
     if not username or not password:
         return f"error <br> <a href={"/"}>Go Home</a>"
-    details.append(detail)
-    with open('uandp.json', 'w') as f:
-        json.dump(details, f)
+
+    existing = User.query.filter_by(user=username).first()
+    if existing is not None and existing.password is not None:
+        return f"error <br> <a href={"/"}><button style={"cursor: pointer"}>Go Home</button></a>"
+
+    date = datetime.now().strftime('%d/%m/%y')
+
+    if existing is None:
+        new_user = User(user=username, number_of_pokes=0)
+        db.session.add(new_user)
+    else:
+        new_user = existing
+
+    new_user.password = generate_password_hash(password)
+    new_user.bio = ""
+    new_user.pfp = "None"
+    new_user.role = "user"
+    new_user.accountDate = date
+    new_user.verified = False
+    new_user.lastSeen = datetime.now().strftime('%d/%m/%y %H:%M:%S')
+    new_user.xp = 0
+
     session['user'] = username
-    session['role'] = detail['role']
+    session['role'] = new_user.role
 
     with open('notifications.json', 'r') as f:
         notifications = json.load(f)
@@ -196,9 +182,7 @@ def createAccount():
 
     with open('notifications.json', 'w') as f:
         json.dump(notifications, f)
-    
-    new_user = User(user=username, number_of_pokes = 0)
-    db.session.add(new_user)
+
     db.session.commit()
 
     return redirect('/')
@@ -207,17 +191,14 @@ def createAccount():
 def loginAccount():
     username = request.form['username']
     password = request.form['password']
-    try:
-        with open('uandp.json', 'r') as f:
-            details = json.load(f)
-            for detail in details:
-                if username == detail['username'] and check_password_hash(detail['password'], password):
-                    session['user'] = username
-                    session['role'] = detail['role']
-                    return redirect('/')
-            return f"error <br> <a href={"/"}>Go Home</a>"
-    except FileNotFoundError:
-        return f"error <br> <a href={"/"}>Go Home</a>"
+
+    user = User.query.filter_by(user=username).first()
+    if user and user.password and check_password_hash(user.password, password):
+        session['user'] = username
+        session['role'] = user.role
+        return redirect('/')
+
+    return f"error <br> <a href={"/"}>Go Home</a>"
     
 @auth.route('/logout')
 def logout():

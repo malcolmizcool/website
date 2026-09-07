@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session
 import json
 import random
 from helpers import award_achievement
+from models import User
 
 suit_names = {'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠'}
 value_names = {'J': 'Jack', 'Q': 'Queen', 'K': 'King', 'A': 'Ace'}
@@ -54,12 +55,11 @@ jack = Blueprint('jack', __name__)
 def blackjack():
     with open('playergameinfo.json', 'r') as f:
         info = json.load(f)
-    with open('uandp.json', 'r') as f:
-        players = json.load(f)
-    
+    db_users = User.query.all()
+
     plist = {}
-    for p in players:
-            plist[p['username']] = p['role']
+    for p in db_users:
+            plist[p.user] = p.role or 'user'
 
 
     player = next((p for p in info if p['user'] == session.get('user')), None)

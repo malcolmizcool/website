@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, session
 from extensions import db
-from models import Thread, Post
+from models import Thread, Post, User
 import json
 from datetime import datetime, timedelta
 import uuid
@@ -37,12 +37,8 @@ def board_page(board):
     if board not in BOARDS:
         return "404 not found", 404
     threads = Thread.query.filter_by(board=board).order_by(Thread.is_pinned.desc(), Thread.created_at.desc()).all()
-    roles = {}
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    for user in users:
-        role = user['role'] 
-        roles[user['username']] = role
+    db_users = User.query.all()
+    roles = {u.user: (u.role or 'user') for u in db_users}
     return render_template('forum/board.html', threads=threads, board=BOARDS[board], slug=board, roles=roles)
 
 @forum.route('/forum/<board>/new', strict_slashes=False)
@@ -96,20 +92,18 @@ def thread_page(board, thread_id):
     if not thread:
         return "404 not found", 404
     posts = Post.query.filter_by(thread_id=thread_id).order_by(Post.created_at.asc()).all()
-    roles = {}
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    for user in users:
-        role = user['role'] 
-        roles[user['username']] = role
+    db_users = User.query.all()
+    roles = {u.user: (u.role or 'user') for u in db_users}
     tz = pytz.timezone('Australia/Sydney')
     now = datetime.now(tz)
 
     online_status = {}
-    for user in users:
-        last_online = tz.localize(datetime.strptime(user['lastSeen'], "%d/%m/%y %H:%M:%S"))
+    for user in db_users:
+        if not user.lastSeen:
+            continue
+        last_online = tz.localize(datetime.strptime(user.lastSeen, "%d/%m/%y %H:%M:%S"))
         status = now - last_online < timedelta(minutes=5)
-        online_status[user['username']] = status
+        online_status[user.user] = status
     return render_template('forum/thread.html', thread=thread, posts=posts, board=BOARDS[board], slug=board, roles=roles, online_status=online_status)
 
 @forum.route('/forum/<board>/<int:thread_id>/<int:post_id>/like', methods=['POST'])
@@ -174,10 +168,8 @@ def reply(board, thread_id):
 def delete_post():
     if not session.get('user'):
         return redirect('/login')
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    roles = {user['username']: user['role'] for user in users}
-    if roles.get(session['user'], 'user') != 'admin':
+    current = User.query.filter_by(user=session['user']).first()
+    if not current or (current.role or 'user') != 'admin':
         return "not authorised", 403
     
     post_id = request.form.get('post_id')
@@ -197,10 +189,8 @@ def delete_post():
 def delete_thread():
     if not session.get('user'):
         return redirect('/login')
-    with open('uandp.json', 'r') as f:
-        users = json.load(f)
-    roles = {user['username']: user['role'] for user in users}
-    if roles.get(session['user'], 'user') != 'admin':
+    current = User.query.filter_by(user=session['user']).first()
+    if not current or (current.role or 'user') != 'admin':
         return "not authorised", 403
     
     thread_id = request.form.get('thread_id')
