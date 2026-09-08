@@ -190,6 +190,19 @@ def index():
     except:
         counter = {'landing_page': "error"}
         visit_counter = 'error'
+
+    try:
+        with open('announcements.json', 'r') as f:
+            announcements = json.load(f)
+    except:
+        announcements = ["error: could not load announcements. I'm sorry, but there don't seem to be any announcements to read..."]
+
+
+    try:
+        with open('links.json', 'r') as f:
+            links = json.load(f)
+    except:
+        links = [{"link": "https://malcolmslab.com", "link_text": "error", "caption": "hmm i cant retrieve any links at the moment. does the file even exist?"}]
     
 
 
@@ -222,11 +235,17 @@ def index():
             user_spin_points += score
         total_numberspin_points += user_spin_points
 
+    db_users = User.query.all()
+    roles = {u.user: u.role or 'user' for u in db_users}
+    current_user = session.get('user')
+
 
     return render_template('newindex.html', online_users=online_users, new_users=new_users, featured=featured, featured_thread=featured_thread, tonline_users=tonline_users, counter=visit_counter, counted_users=counted_users,
                            nfeedback=nfeedback,
                            active_users=active_users,
-                           total_blackjack_wins=total_blackjack_wins, total_numberspin_points=total_numberspin_points)
+                           total_blackjack_wins=total_blackjack_wins, total_numberspin_points=total_numberspin_points,
+                           announcements=announcements, roles=roles, current_user=current_user,
+                           links=links)
 
 @app.route('/oldpage')
 def old_page():

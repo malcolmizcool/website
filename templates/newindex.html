@@ -17,11 +17,13 @@
     </table>
     <table style="width: 100%;">
         <tr class="table_heading_background"><td><b><span class="table_heading_text">updates</span></b></td></tr>
-        <tr class="primary_background"><td> <span style="color: #c8a060;">⚠</span>14/04/26 - this site will <b>no longer be supported on mobile devices</b></td></tr>
-        <tr class="secondary_background"><td> 🤔 10/04/26 - the look of the landing page has been updated! please leave your feedback <a href="/forum/feedback">here</a>.</td></tr>
-        <tr class="primary_background"><td><span style="color: #6aa888 ;">▶</span>08/04/26 - Markdown has been added to forums. read more <a href="/forum/announcements/4">here</a>.</td></tr>
-        <tr class="secondary_background"><td>😶 04/04/26 - a new game is officially in the works. it should have its first release in late May.</td></tr>
-        <tr class="primary_background"><td><span style="color: #6a7480;">see all announcements <a href="forum/announcements">here</a></span></td></tr>
+        {% for announcement in announcements %}
+        <tr><td>{{ announcement }} {% if roles.get(current_user, 'user') == 'admin' %} 
+            <form action="/admin/deleteAnnouncement" method="POST">
+                <input type="hidden" name="index" value="{{ loop.index0 }}">
+                <button type="submit" class="buttonthing">Delete</button>
+            </form> {% endif %}</td></tr>
+        {% endfor %}
     </table>
     <div style="display: flex; width: 100%;">
         <table style="flex: 1">
@@ -81,10 +83,15 @@
         <tr class="primary_background"><td>total numberspin points: {{ total_numberspin_points }}</td></tr>
     </table>
     <table style="width: 100%;">
-        <tr class="table_heading_background"><td colspan="2"><b><span class="table_heading_text">interesting/cool links</span></b></td></tr>
-        <tr class="secondary_background"><td><a href="https://awbw.amarriner.com/" style="color: #6a9ab8;">AWBW</a></td><td style="color: #6a7480;">guys please play this it's actually so peak</td></tr>
-        <tr class="primary_background"><td><a href="https://www.youtube.com/watch?v=fVIUwpOWTYM" style="color: #6a9ab8;">A Public Stoning</a></td><td style="color: #6a7480;">new puscifer music video</td></tr>
-        <tr class="secondary_background"><td><a href="https://www.instagram.com/p/DPRPqvoDuy7/" style="color: #6a9ab8;">thermos</a></td><td><span style="color: #6a7480;">picking out a thermos</span></td></tr>
+        <tr class="table_heading_background"><td colspan="3"><b><span class="table_heading_text">interesting/cool links</span></b></td></tr>
+        {% for link in links %}
+            <tr class="secondary_background"><td><a href="{{ link['link'] }}" style="color: #6a9ab8;" target="_blank">{{ link['link_text'] }}</a></td><td style="color: #6a7480;">{{ link['caption']}}</td>{% if roles.get(current_user, 'user') == 'admin' %} 
+            <td style="color: #6a7480;"><form action="/admin/deleteLink" method="POST">
+                <input type="hidden" name="index" value="{{ loop.index0 }}">
+                <button type="submit" class="buttonthing">Delete</button>
+            </form></td> {% endif %}</tr>
+        {% endfor %}
+
     </table>
     <table style="width: 100%;">
         <tr class="table_heading_background"><td><b><span class="table_heading_text">featured art</span></b></td></tr>

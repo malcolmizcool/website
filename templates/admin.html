@@ -26,7 +26,12 @@
         <b>Send Direct Notification</b>
         <form action="/admin/notification/direct" method="POST">
             <label for="user">user:</label>
-            <input type="text" id="user" name="user"> <br>
+            <select name="user" id="user">
+                <option value="">Select a user</option>
+                {% for user in users %}
+                    <option value="{{ user.user }}">{{ user.user }}</option>
+                {% endfor %}
+            </select> <br>
             <label for="title">title:</label>
             <input type="text" id="title" name="title"> <br>
             <label for="message">Message:</label><br>
@@ -46,15 +51,50 @@
         </form>
     </div>
 
+    <div class="card">
+        <b>Add an announcement</b>
+        <form action="/admin/updateannouncements", method="POST">
+            <label for="newannouncement">New announcement:</label>
+            <input type="text" id="newannouncement" name="newannouncement"> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    
+
+    </div>
+    <div class="card">
+        <b>Add a link to the homepage</b>
+        <form action="/admin/updatelinks", method="POST">
+            <label for="new_link">New link: (this will be converted into a hyperlink)</label><br>
+            <input type="text" id="new_link" name="new_link"><br>
+            <label for="new_link_text">Link text (this will be the text that is viewed)</label><br>
+            <input type="text" id="new_link_text" name="new_link_text"><br>
+            <label for="new_caption">Caption (next to the link)</label><br>
+            <input type="text" id="new_caption" name="new_caption"><br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </div>
+
     <div class="section-title">Users</div>
 
     <div class="card">
         <b>Change user rank</b>
         <form action="/admin/userrank" method="POST">
             <label for="user">user:</label>
-            <input type="text" id="user" name="user"> <br>
+            <select name="user" id="user">
+                <option value="">Select a user</option>
+                {% for user in users %}
+                    <option value="{{ user.user }}">{{ user.user }}</option>
+                {% endfor %}
+            </select> <br>
             <label for="newrank">new rank:</label>
-            <input type="text" id="newrank" name="newrank"> <br>
+
+            <select name="newrank" id="newrank">
+                <option value="">Select a rank</option>
+                {% for rank in ranks %}
+                    <option value="{{ rank }}">{{ rank }}</option>
+                {% endfor %}
+            </select>
+            <br>
             <input type="submit" class="buttonthing">
         </form>
     </div>
@@ -95,14 +135,26 @@
         <b>Award achievement</b>
         <form action="/admin/achievement/award" method="POST">
             <label for="user">username:</label>
-            <input type="text" id="user" name="user"> <br>
+            <select id="user" name="user">
+                <option value="">Select a user</option>
+                {% for u in users %}
+                    <option value="{{ u.user }}">{{ u.user }}</option>
+                {% endfor %}
+            </select>
+            <br>
             <label for="achievementid">achievement id:</label>
-            <input type="text" id="achievementid" name="achievementid"> <br>
+            <select id="achievementid" name="achievementid">
+                <option value="">Select an achievement</option>
+                {% for a in achievement_list %}
+                    <option value="{{ a.id }}">{{ a.name }} - {{ a.description  }}</option>
+                {% endfor %}
+            </select>
+            <br>
             <input type="submit" class="buttonthing">
         </form>
     </div>
 
-    <div class="section-title">Flairs</div>
+    <!-- <div class="section-title">Flairs</div>
 
     <div class="card">
         <b>Add flair</b>
@@ -118,9 +170,9 @@
             <input type="submit" class="buttonthing">
         </form>
         <a href="/admin?show=flairs"><button class="buttonthing">Show flairs</button></a>
-    </div>
+    </div> -->
 
-    {% if show_flairs %}
+    <!-- {% if show_flairs %}
     <div class="card">
         {% for a in flair_list %}
         <div class="achievement-row">
@@ -132,9 +184,9 @@
         </div>
         {% endfor %}
     </div>
-    {% endif %}
+    {% endif %} -->
 
-    <div class="card">
+    <!-- <div class="card">
         <b>Award flair</b>
         <form action="/admin/flair/award" method="POST">
             <label for="user">username:</label>
@@ -143,7 +195,7 @@
             <input type="text" id="achievementid" name="achievementid"> <br>
             <input type="submit" class="buttonthing">
         </form>
-    </div>
+    </div> -->
 
     <div class="section-title">Migration</div>
 
