@@ -16,4 +16,6 @@ notifications.json
 counter.json
 backups/
 *.tar.gz
-
+announcements.json
+links.json
+ranks.json

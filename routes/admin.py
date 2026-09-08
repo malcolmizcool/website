@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, redirect, session, flash
 import json
 from datetime import datetime
 import os
@@ -9,6 +9,36 @@ from models import User
 from extensions import db
 
 admin = Blueprint('admin', __name__)
+
+@admin.route('/admin')
+def admin_page():
+    show_achievements = request.args.get('show') == 'achievements'
+    show_flairs = request.args.get('show') == 'flairs'
+
+    
+    try:
+        with open('flair_list.json', 'r') as f:
+            flair_list = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        flair_list = []
+
+    users = User.query.all()
+
+    try:
+        with open('ranks.json', 'r') as f:
+            ranks = json.load(f)
+    except:
+        ranks = ["error: im sorry but i cant read the ranks file at the moment", "user", "admin"]
+
+
+    try:
+        with open('achievement_list.json', 'r') as f:
+            achievement_list = json.load(f)
+    except:
+        achievement_list = [{"id": "error", "name": "Error", "description": "I'm sorry, but I can't read the achievement list at the moment.", "rarity": "error"}]
+
+    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements, flair_list = flair_list, show_flairs=show_flairs,
+                           users=users, ranks=ranks)
 
 @admin.route('/admin/migrategame')
 def migrate_game():
@@ -31,6 +61,83 @@ def migrate_number():
         json.dump(players, f)
     
     return f"done <a href='/admin'>do another</a>"
+
+
+@admin.route('/admin/updateannouncements', methods=['POST'])
+def update_announcements():
+    new_announcement = request.form['newannouncement']
+
+
+
+    try:
+        with open('announcements.json', 'r') as f:
+            announcements = json.load(f)
+    except:
+        announcements = []
+    announcements.insert(0, new_announcement)
+
+    with open('announcements.json', 'w') as f:
+        json.dump(announcements, f)
+
+    return redirect("/")
+
+@admin.route('/admin/updatelinks', methods=['POST'])
+def update_links():
+    new_link = request.form['new_link']
+    new_link_text = request.form['new_link_text']
+    new_caption = request.form['new_caption']
+
+    try:
+        with open('links.json', 'r') as f:
+            links = json.load(f)
+    except:
+        links = []
+
+    links.insert(0, {"link": new_link,
+                     "link_text": new_link_text,
+                     "caption": new_caption})
+
+    with open('links.json', 'w') as f:
+        json.dump(links, f)
+
+    return redirect("/")
+
+
+@admin.route('/admin/deleteAnnouncement', methods=['POST'])
+def delete_announcement():
+    index = request.form['index']
+
+    try:
+        with open('announcements.json', 'r') as f:
+            announcements = json.load(f)
+    except:
+        return("hmm that didnt work. Maybe the announcement doesn't exist? I cant read the announcement file at all.")
+
+    del announcements[int(index)]
+
+    with open('announcements.json', 'w') as f:
+        json.dump(announcements, f)
+
+    return redirect('/')
+
+@admin.route('/admin/deleteLink', methods=['POST'])
+def delete_link():
+    index = request.form['index']
+
+    try:
+        with open('links.json', 'r') as f:
+            links = json.load(f)
+    except:
+        return("hmm that didnt work. Maybe the link doesn't exist? I cant read the link file at all.")
+
+    del links[int(index)]
+
+    with open('links.json', 'w') as f:
+        json.dump(links, f)
+
+    return redirect('/')
+
+    
 
 @admin.route('/admin/migrategame', methods=['POST'])
 def migrategame():
@@ -148,23 +255,6 @@ def award_player_flair():
     award_flair(user, achievement_id)
     return redirect('/admin')
 
-@admin.route('/admin')
-def admin_page():
-    show_achievements = request.args.get('show') == 'achievements'
-    show_flairs = request.args.get('show') == 'flairs'
-    try:
-        with open('achievement_list.json', 'r') as f:
-            achievement_list = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        achievement_list = []
-    
-    try:
-        with open('flair_list.json', 'r') as f:
-            flair_list = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        flair_list = []
-
-    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements, flair_list = flair_list, show_flairs=show_flairs)
 
 @admin.route('/admin/achievement/delete', methods=['POST'])
 def delete_achievement():
