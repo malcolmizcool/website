@@ -1,6 +1,25 @@
 import json
 from models import User
 from extensions import db
+from flask import session, redirect
+from functools import wraps
+
+
+
+def require_admin(f):
+    """Blocks a route unless the logged-in user's role in the database is 'admin'.
+    Checks the live database, not the cached session role, so a rank change
+    takes effect immediately without needing to log out and back in."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('user'):
+            return redirect('/login')
+        current = User.query.filter_by(user=session['user']).first()
+        if not current or (current.role or 'user') != 'admin':
+            return "not authorised", 403
+        return f(*args, **kwargs)
+    return decorated
+
 
 def get_achievements(username):
     try:

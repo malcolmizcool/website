@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session, flash
 import json
 from datetime import datetime
 import os
-from helpers import award_achievement, award_flair
+from helpers import award_achievement, award_flair, require_admin
 import uuid
 import pytz
 from models import User
@@ -10,7 +10,10 @@ from extensions import db
 
 admin = Blueprint('admin', __name__)
 
+
+
 @admin.route('/admin')
+@require_admin
 def admin_page():
     show_achievements = request.args.get('show') == 'achievements'
     show_flairs = request.args.get('show') == 'flairs'
@@ -41,10 +44,12 @@ def admin_page():
                            users=users, ranks=ranks)
 
 @admin.route('/admin/migrategame')
+@require_admin
 def migrate_game():
     return render_template('migrategameinfo.html')
 
 @admin.route('/admin/migratenumber', methods=['POST'])
+@require_admin
 def migrate_number():
     newfield = request.form['newfield']
     default_value = request.form['value']
@@ -64,6 +69,7 @@ def migrate_number():
 
 
 @admin.route('/admin/updateannouncements', methods=['POST'])
+@require_admin
 def update_announcements():
     new_announcement = request.form['newannouncement']
 
@@ -82,6 +88,7 @@ def update_announcements():
     return redirect("/")
 
 @admin.route('/admin/updatelinks', methods=['POST'])
+@require_admin
 def update_links():
     new_link = request.form['new_link']
     new_link_text = request.form['new_link_text']
@@ -104,6 +111,7 @@ def update_links():
 
 
 @admin.route('/admin/deleteAnnouncement', methods=['POST'])
+@require_admin
 def delete_announcement():
     index = request.form['index']
 
@@ -121,6 +129,7 @@ def delete_announcement():
     return redirect('/')
 
 @admin.route('/admin/deleteLink', methods=['POST'])
+@require_admin
 def delete_link():
     index = request.form['index']
 
@@ -140,6 +149,7 @@ def delete_link():
     
 
 @admin.route('/admin/migrategame', methods=['POST'])
+@require_admin
 def migrategame():
     newfield = request.form['newfield']
     default_value = request.form['value']
@@ -157,12 +167,14 @@ def migrategame():
     return f"done <a href='/admin'>do another</a>"
 
 @admin.route('/admin/migrateuandp')
+@require_admin
 def migrate_uandp():
     if session.get('user') != 'malcolm':
         return "nope"
     return "User accounts now live in the database, not uandp.json, so this bulk field-adder no longer applies. To add a new field to all users, add a column to the User model in models.py and run a database migration instead. <a href='/admin'>Back</a>"
 
 @admin.route('/admin/userrank', methods=['POST'])
+@require_admin
 def user_rank():
     username = request.form['user']
     rank = request.form['newrank']
@@ -173,6 +185,7 @@ def user_rank():
     return redirect('/admin')
 
 @admin.route('/admin/feedback')
+@require_admin
 def show_feedback():
     with open('feedback.json', 'r') as f:
         feedback = json.load(f)
@@ -180,6 +193,7 @@ def show_feedback():
     return render_template('showfeedback.html', feedback=feedback)
 
 @admin.route('/admin/feedback/delete', methods=['POST'])
+@require_admin
 def delete_feedback():
     entry = request.form['index']
     try:
@@ -193,11 +207,13 @@ def delete_feedback():
     return redirect('/admin/feedback')
 
 @admin.route('/admin/users')
+@require_admin
 def show_users():
     users = User.query.all()
     return render_template('adminusers.html', users=users)
 
 @admin.route('/admin/achievement/add', methods=['POST'])
+@require_admin
 def add_achievement():
     id = request.form['achievementid']
     name = request.form['achievementname']
@@ -220,6 +236,7 @@ def add_achievement():
     return redirect('/admin')
     
 @admin.route('/admin/achievement/award', methods=['POST'])
+@require_admin
 def award_player_achievement():
     user = request.form['user']
     achievement_id = request.form['achievementid']
@@ -227,6 +244,7 @@ def award_player_achievement():
     return redirect('/admin')
 
 @admin.route('/admin/flair/add', methods=['POST'])
+@require_admin
 def add_flair():
     id = request.form['achievementid']
     name = request.form['achievementname']
@@ -249,6 +267,7 @@ def add_flair():
     return redirect('/admin')
     
 @admin.route('/admin/flair/award', methods=['POST'])
+@require_admin
 def award_player_flair():
     user = request.form['user']
     achievement_id = request.form['achievementid']
@@ -257,6 +276,7 @@ def award_player_flair():
 
 
 @admin.route('/admin/achievement/delete', methods=['POST'])
+@require_admin
 def delete_achievement():
     achievement_id = request.form['id']
     with open('achievement_list.json', 'r') as f:
@@ -273,6 +293,7 @@ def delete_achievement():
     return redirect('/admin?show=achievements')
 
 @admin.route('/admin/flair/delete', methods=['POST'])
+@require_admin
 def delete_flair():
     achievement_id = request.form['id']
     with open('flair_list.json', 'r') as f:
@@ -289,6 +310,7 @@ def delete_flair():
     return redirect('/admin?show=flairs')
 
 @admin.route('/admin/notification/direct', methods=['POST'])
+@require_admin
 def send_direct_notification():
     user = request.form['user']
     title = request.form['title']
@@ -328,6 +350,7 @@ def send_direct_notification():
     return redirect('/admin')
 
 @admin.route('/admin/notifications/universal', methods=['POST'])
+@require_admin
 def send_universal_notification():
     title = request.form['title']
     message = request.form['message']
