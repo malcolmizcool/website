@@ -5,6 +5,7 @@ import json
 from datetime import datetime, timedelta
 import uuid
 import pytz
+from helpers import data_path
 
 forum = Blueprint('forum', __name__)
 
@@ -157,7 +158,7 @@ def reply(board, thread_id):
             }
 
             entry['notifications'].append(new_notification)
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notification_entries, f)
     
 

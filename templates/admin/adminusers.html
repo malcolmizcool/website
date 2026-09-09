@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+{% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
+
+    {% for user in users %}
+        <a href="/profile/{{ user['username'] }}"><span class="role-{{ user['role'] }}">{{ user['username'] }}</span></a> <br> <br>
+        <img src="/static/avatars/{{ user.username }}.png" onerror="this.src='/static/avatars/default.png'" height="100">
+        <hr>
+    {% endfor %}
+
+{% else %}
+    You shouldn't be here!
+{% endif %}
+
+{% endblock %}

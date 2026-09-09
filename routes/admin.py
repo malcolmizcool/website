@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session, flash
 import json
 from datetime import datetime
 import os
-from helpers import award_achievement, award_flair, require_admin
+from helpers import load_json, award_achievement, award_flair, require_admin, data_path
 import uuid
 import pytz
 from models import User
@@ -20,7 +20,7 @@ def admin_page():
 
     
     try:
-        with open('flair_list.json', 'r') as f:
+        with open(data_path('flair_list.json'), 'r') as f:
             flair_list = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         flair_list = []
@@ -28,25 +28,25 @@ def admin_page():
     users = User.query.all()
 
     try:
-        with open('ranks.json', 'r') as f:
+        with open(data_path('ranks.json'), 'r') as f:
             ranks = json.load(f)
     except:
         ranks = ["error: im sorry but i cant read the ranks file at the moment", "user", "admin"]
 
 
     try:
-        with open('achievement_list.json', 'r') as f:
+        with open(data_path('achievement_list.json'), 'r') as f:
             achievement_list = json.load(f)
     except:
         achievement_list = [{"id": "error", "name": "Error", "description": "I'm sorry, but I can't read the achievement list at the moment.", "rarity": "error"}]
 
-    return render_template('admin.html', achievement_list=achievement_list, show_achievements=show_achievements, flair_list = flair_list, show_flairs=show_flairs,
+    return render_template('admin/admin.html', achievement_list=achievement_list, show_achievements=show_achievements, flair_list = flair_list, show_flairs=show_flairs,
                            users=users, ranks=ranks)
 
 @admin.route('/admin/migrategame')
 @require_admin
 def migrate_game():
-    return render_template('migrategameinfo.html')
+    return render_template('admin/migrategameinfo.html')
 
 @admin.route('/admin/migratenumber', methods=['POST'])
 @require_admin
@@ -54,7 +54,7 @@ def migrate_number():
     newfield = request.form['newfield']
     default_value = request.form['value']
     try:
-        with open('spininfo.json', 'r') as f:
+        with open(data_path('spininfo.json'), 'r') as f:
             players = json.load(f)
     except:
         players = []
@@ -62,7 +62,7 @@ def migrate_number():
         if newfield not in player:
             player[newfield] = default_value
     
-    with open('spininfo.json', 'w') as f:
+    with open(data_path('spininfo.json'), 'w') as f:
         json.dump(players, f)
     
     return f"done <a href='/admin'>do another</a>"
@@ -76,13 +76,13 @@ def update_announcements():
 
 
     try:
-        with open('announcements.json', 'r') as f:
+        with open(data_path('announcements.json'), 'r') as f:
             announcements = json.load(f)
     except:
         announcements = []
     announcements.insert(0, new_announcement)
 
-    with open('announcements.json', 'w') as f:
+    with open(data_path('announcements.json'), 'w') as f:
         json.dump(announcements, f)
 
     return redirect("/")
@@ -95,7 +95,7 @@ def update_links():
     new_caption = request.form['new_caption']
 
     try:
-        with open('links.json', 'r') as f:
+        with open(data_path('links.json'), 'r') as f:
             links = json.load(f)
     except:
         links = []
@@ -104,7 +104,7 @@ def update_links():
                      "link_text": new_link_text,
                      "caption": new_caption})
 
-    with open('links.json', 'w') as f:
+    with open(data_path('links.json'), 'w') as f:
         json.dump(links, f)
 
     return redirect("/")
@@ -116,14 +116,14 @@ def delete_announcement():
     index = request.form['index']
 
     try:
-        with open('announcements.json', 'r') as f:
+        with open(data_path('announcements.json'), 'r') as f:
             announcements = json.load(f)
     except:
         return("hmm that didnt work. Maybe the announcement doesn't exist? I cant read the announcement file at all.")
 
     del announcements[int(index)]
 
-    with open('announcements.json', 'w') as f:
+    with open(data_path('announcements.json'), 'w') as f:
         json.dump(announcements, f)
 
     return redirect('/')
@@ -134,14 +134,14 @@ def delete_link():
     index = request.form['index']
 
     try:
-        with open('links.json', 'r') as f:
+        with open(data_path('links.json'), 'r') as f:
             links = json.load(f)
     except:
         return("hmm that didnt work. Maybe the link doesn't exist? I cant read the link file at all.")
 
     del links[int(index)]
 
-    with open('links.json', 'w') as f:
+    with open(data_path('links.json'), 'w') as f:
         json.dump(links, f)
 
     return redirect('/')
@@ -154,14 +154,13 @@ def migrategame():
     newfield = request.form['newfield']
     default_value = request.form['value']
     
-    with open('playergameinfo.json', 'r') as f:
-        players = json.load(f)
+    players = load_json('playergameinfo.json', [])
     
     for player in players:
         if newfield not in player:
             player[newfield] = default_value
     
-    with open('playergameinfo.json', 'w') as f:
+    with open(data_path('playergameinfo.json'), 'w') as f:
         json.dump(players, f)
     
     return f"done <a href='/admin'>do another</a>"
@@ -187,22 +186,21 @@ def user_rank():
 @admin.route('/admin/feedback')
 @require_admin
 def show_feedback():
-    with open('feedback.json', 'r') as f:
-        feedback = json.load(f)
+    feedback = load_json('feedback.json', [])
     
-    return render_template('showfeedback.html', feedback=feedback)
+    return render_template('admin/showfeedback.html', feedback=feedback)
 
 @admin.route('/admin/feedback/delete', methods=['POST'])
 @require_admin
 def delete_feedback():
     entry = request.form['index']
     try:
-        with open('feedback.json', 'r') as f:
+        with open(data_path('feedback.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         return f"no feedback. <a href={"/admin"}><button>Return Home</button></a>"
     del entries[int(entry)]
-    with open('feedback.json', 'w') as f:
+    with open(data_path('feedback.json'), 'w') as f:
         json.dump(entries, f)
     return redirect('/admin/feedback')
 
@@ -210,7 +208,7 @@ def delete_feedback():
 @require_admin
 def show_users():
     users = User.query.all()
-    return render_template('adminusers.html', users=users)
+    return render_template('admin/adminusers.html', users=users)
 
 @admin.route('/admin/achievement/add', methods=['POST'])
 @require_admin
@@ -226,12 +224,12 @@ def add_achievement():
         "rarity": colour
     }
     try:
-        with open('achievement_list.json', 'r') as f:
+        with open(data_path('achievement_list.json'), 'r') as f:
             achievements = json.load(f)
     except:
         achievements = []
     achievements.append(new_achievement)
-    with open('achievement_list.json', 'w') as f:
+    with open(data_path('achievement_list.json'), 'w') as f:
         json.dump(achievements, f)
     return redirect('/admin')
     
@@ -257,12 +255,12 @@ def add_flair():
         "rarity": colour
     }
     try:
-        with open('flair_list.json', 'r') as f:
+        with open(data_path('flair_list.json'), 'r') as f:
             achievements = json.load(f)
     except:
         achievements = []
     achievements.append(new_achievement)
-    with open('flair_list.json', 'w') as f:
+    with open(data_path('flair_list.json'), 'w') as f:
         json.dump(achievements, f)
     return redirect('/admin')
     
@@ -279,16 +277,14 @@ def award_player_flair():
 @require_admin
 def delete_achievement():
     achievement_id = request.form['id']
-    with open('achievement_list.json', 'r') as f:
-        achievements = json.load(f)
+    achievements = load_json('achievement_list.json', [])
     achievements = [a for a in achievements if a['id'] != achievement_id]
-    with open('achievement_list.json', 'w') as f:
+    with open(data_path('achievement_list.json'), 'w') as f:
         json.dump(achievements, f)
-    with open('achievements.json', 'r') as f:
-        users = json.load(f)
+    users = load_json('achievements.json', [])
     for user in users:
         user['achievements'] = [a for a in user['achievements'] if a != achievement_id]
-    with open('achievements.json', 'w') as f:
+    with open(data_path('achievements.json'), 'w') as f:
         json.dump(users, f)
     return redirect('/admin?show=achievements')
 
@@ -296,16 +292,14 @@ def delete_achievement():
 @require_admin
 def delete_flair():
     achievement_id = request.form['id']
-    with open('flair_list.json', 'r') as f:
-        achievements = json.load(f)
+    achievements = load_json('flair_list.json', [])
     achievements = [a for a in achievements if a['id'] != achievement_id]
-    with open('flair_list.json', 'w') as f:
+    with open(data_path('flair_list.json'), 'w') as f:
         json.dump(achievements, f)
-    with open('flairs.json', 'r') as f:
-        users = json.load(f)
+    users = load_json('flairs.json', [])
     for user in users:
         user['flairs'] = [a for a in user['flairs'] if a != achievement_id]
-    with open('flairs.json', 'w') as f:
+    with open(data_path('flairs.json'), 'w') as f:
         json.dump(users, f)
     return redirect('/admin?show=flairs')
 
@@ -318,8 +312,7 @@ def send_direct_notification():
     tz = pytz.timezone('Australia/Sydney')
     time = datetime.now(tz).isoformat()
 
-    with open('notifications.json', 'r') as f:
-        notifications = json.load(f)
+    notifications = load_json('notifications.json', [])
 
     new_notification = {
         'id': str(uuid.uuid4()),
@@ -344,7 +337,7 @@ def send_direct_notification():
             'notifications': [new_notification]
         })
 
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notifications, f)
 
     return redirect('/admin')
@@ -360,7 +353,7 @@ def send_universal_notification():
     users = User.query.all()
 
     try:
-        with open('notifications.json', 'r') as f:
+        with open(data_path('notifications.json'), 'r') as f:
             notifications = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         notifications = []
@@ -381,7 +374,7 @@ def send_universal_notification():
             notifications.append(entry)
         entry['notifications'].append(new_notification)
 
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notifications, f)
 
     return redirect('/admin')

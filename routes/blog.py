@@ -1,27 +1,28 @@
 from flask import Blueprint, render_template, request, redirect, session
 from datetime import datetime
 import json
+from helpers import load_json, data_path
 
 blog = Blueprint('blog', __name__)
 
 @blog.route('/blog')
 def blog_page():
     try:
-        with open('blog.json', 'r') as f:
+        with open(data_path('blog.json'), 'r') as f:
             blogs = json.load(f)
     except FileNotFoundError:
         return "error"
-    return render_template('blog.html', blogs=blogs)
+    return render_template('blog/blog.html', blogs=blogs)
 
 @blog.route('/blog/<id>')
 def blogpost(id):
     try:
-        with open('blog.json', 'r') as f:
+        with open(data_path('blog.json'), 'r') as f:
             blogs = json.load(f)
     except FileNotFoundError:
         return "error"
     post = next((p for p in blogs if p['id'] == id), None)
-    return render_template('blogpost.html', post=post)
+    return render_template('blog/blogpost.html', post=post)
 
 @blog.route('/createBlogPost', methods=['POST'])
 def createBlogPost():
@@ -30,7 +31,7 @@ def createBlogPost():
     date = request.form['date']
     date = datetime.strptime(date, '%Y-%m-%d').strftime('%d/%m/%y')
     try:
-        with open('blog.json', 'r') as f:
+        with open(data_path('blog.json'), 'r') as f:
             blogs = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         blogs = []
@@ -49,10 +50,9 @@ def createBlogPost():
 @blog.route('/deleteBlogPost', methods=['POST'])
 def deleteBlogPost():
         blogid = request.form['id']
-        with open('blog.json', 'r') as f:
-            blogs = json.load(f)
+        blogs = load_json('blog.json', [])
         blogs = [b for b in blogs if b['id'] != blogid]
-        with open('blog.json', 'w') as f:
+        with open(data_path('blog.json'), 'w') as f:
             json.dump(blogs, f)
         return redirect('/blog')
 

@@ -2,13 +2,14 @@ from app import app
 from extensions import db
 from models import User
 import json
+from helpers import data_path
 
 with app.app_context():
     db.create_all()
     upgrade_feedback = []
     updated_users = 0
 
-    with open('uandp.json', 'r') as f:
+    with open(data_path('uandp.json'), 'r') as f:
         users = json.load(f)
     
     for u in users:
@@ -25,7 +26,7 @@ with app.app_context():
 
 
     background_users_updated_pickle = 0
-    with open('achievements.json', 'r') as f:
+    with open(data_path('achievements.json'), 'r') as f:
         achievements = json.load(f)
 
     pickles_background_users = []

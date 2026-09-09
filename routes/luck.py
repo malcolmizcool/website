@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, session
 import json
 from datetime import datetime
 import os
-from helpers import award_achievement
+from helpers import award_achievement, data_path
 import random
 
 luck = Blueprint('luck', __name__)
@@ -40,7 +40,7 @@ def spin():
 def main():
 
     try:
-        with open('spininfo.json', 'r') as f:
+        with open(data_path('spininfo.json'), 'r') as f:
             info = json.load(f)
     except:
         info = []
@@ -58,7 +58,7 @@ def main():
     user_scores.sort(reverse=True)
 
 
-    return render_template('numberspin.html', list1=list1, user_scores=user_scores, user=user)
+    return render_template('games/numberspin.html', list1=list1, user_scores=user_scores, user=user)
 
 @luck.route('/numberspin/solo')
 def solo():
@@ -73,7 +73,7 @@ def solo():
             "state": "playing"
         }
         chosen_number = spin()
-    return render_template('spinsolo.html')
+    return render_template('games/spinsolo.html')
 
 @luck.route('/numberspin/solo/higher')
 def higher():
@@ -113,7 +113,7 @@ def end():
     session['spinsolo']['buttons'] = False
     session.modified = True
     try:
-        with open('spininfo.json', 'r') as f:
+        with open(data_path('spininfo.json'), 'r') as f:
             info = json.load(f)
     except FileNotFoundError:
         info = []
@@ -130,7 +130,7 @@ def end():
         }
         info.append(new)
     
-    with open('spininfo.json', 'w') as f:
+    with open(data_path('spininfo.json'), 'w') as f:
         json.dump(info, f)
     return redirect('/numberspin/solo')
 

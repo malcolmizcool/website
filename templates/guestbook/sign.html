@@ -1,0 +1,14 @@
+
+    {% extends "base.html" %}
+    {% block title %}Guestbook{% endblock %}
+    {% block content %}
+    {% if session.get('user') %}
+    <form action="/process" method="post">
+    <label for="message">Message:</label><br>
+    <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Submit" class="buttonthing">
+    </form>
+    {% else %}
+    Please <a href="/login"><button class="buttonthing">login</button></a> to sign the guest book!
+    {% endif %}
+    {% endblock %}
