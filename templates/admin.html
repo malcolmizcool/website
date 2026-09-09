@@ -11,7 +11,7 @@
     .achievement-row:last-child { border-bottom: none; }
 </style>
 
-{% if session.get('user') == 'malcolm' or session.get('user') == 'admin' %}
+
 
 <div class="admin-wrap">
 
@@ -53,7 +53,7 @@
 
     <div class="card">
         <b>Add an announcement</b>
-        <form action="/admin/updateannouncements", method="POST">
+        <form action="/admin/updateannouncements" method="POST">
             <label for="newannouncement">New announcement:</label>
             <input type="text" id="newannouncement" name="newannouncement"> <br>
             <input type="submit" class="buttonthing">
@@ -63,7 +63,7 @@
     </div>
     <div class="card">
         <b>Add a link to the homepage</b>
-        <form action="/admin/updatelinks", method="POST">
+        <form action="/admin/updatelinks" method="POST">
             <label for="new_link">New link: (this will be converted into a hyperlink)</label><br>
             <input type="text" id="new_link" name="new_link"><br>
             <label for="new_link_text">Link text (this will be the text that is viewed)</label><br>
@@ -212,8 +212,5 @@
 
 </div>
 
-{% else %}
-    You shouldn't be here!
-{% endif %}
 
 {% endblock %}
