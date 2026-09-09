@@ -21,6 +21,7 @@ from routes.jack import jack
 from routes.admin import admin
 from routes.luck import luck
 from routes.forum import forum
+from helpers import load_json, data_path
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
@@ -40,18 +41,39 @@ app.register_blueprint(admin)
 app.register_blueprint(luck)
 app.register_blueprint(forum)
 
-pages = ["empty", 
-         "faqs", 
-         "report",
-         "status",
-         "thanks",
-         "newpost"]
+# --- First-run database setup ---------------------------------------------
+# Our oldest Alembic migration only ALTERs existing tables; it assumes
+# user/thread/post already exist (they were originally created by
+# db.create_all() before this project used Flask-Migrate). On a brand-new
+# server there is no site.db yet, so `flask db upgrade` alone fails with
+# "no such table". This block makes a fresh checkout self-healing: if the
+# core tables don't exist yet, create them directly and mark Alembic as
+# already caught up. On a server that already has a working database, both
+# of these calls are no-ops, so existing installs are unaffected.
+with app.app_context():
+    from sqlalchemy import inspect
+    from flask_migrate import stamp
+
+    inspector = inspect(db.engine)
+    if not inspector.has_table('user'):
+        db.create_all()
+        stamp(revision='head')
+# ---------------------------------------------------------------------------
+
+pages = {
+    "empty": "pages/empty.html",
+    "faqs": "pages/faqs.html",
+    "report": "pages/report.html",
+    "status": "pages/status.html",
+    "thanks": "pages/thanks.html",
+    "newpost": "blog/newpost.html",
+}
 
 
 @app.route('/<page>')
 def catch(page):
     if page in pages:
-        return render_template(page + '.html')
+        return render_template(pages[page])
     return "404 not found", 404
 
 @app.template_filter('md')
@@ -180,7 +202,7 @@ def index():
     featured_thread = Thread.query.get(FEATURED_THREAD_ID)
 
     try:
-        with open('counter.json', 'r') as f:
+        with open(data_path('counter.json'), 'r') as f:
             counter = json.load(f)
         visit_counter = int(counter['landing_page']) + 1
         counter['landing_page'] = str(visit_counter)
@@ -192,38 +214,35 @@ def index():
         visit_counter = 'error'
 
     try:
-        with open('announcements.json', 'r') as f:
+        with open(data_path('announcements.json'), 'r') as f:
             announcements = json.load(f)
     except:
         announcements = ["error: could not load announcements. I'm sorry, but there don't seem to be any announcements to read..."]
 
 
     try:
-        with open('links.json', 'r') as f:
+        with open(data_path('links.json'), 'r') as f:
             links = json.load(f)
     except:
         links = [{"link": "https://malcolmslab.com", "link_text": "error", "caption": "hmm i cant retrieve any links at the moment. does the file even exist?"}]
     
 
 
-    with open('counter.json', 'w') as f:
+    with open(data_path('counter.json'), 'w') as f:
         json.dump(counter, f)
 
     counted_users = len(all_users)
 
 
-    with open('feedback.json', 'r') as f:
-        feedback = json.load(f)
+    feedback = load_json('feedback.json', [])
     
     nfeedback = len(feedback)
 
     total_blackjack_wins = 0
     total_numberspin_points = 0
-    with open('playergameinfo.json', 'r') as f:
-        game_info = json.load(f)
+    game_info = load_json('playergameinfo.json', [])
     
-    with open('spininfo.json', 'r') as f:
-        spin_info = json.load(f)
+    spin_info = load_json('spininfo.json', [])
     
     
     for entry in game_info:
@@ -240,7 +259,7 @@ def index():
     current_user = session.get('user')
 
 
-    return render_template('newindex.html', online_users=online_users, new_users=new_users, featured=featured, featured_thread=featured_thread, tonline_users=tonline_users, counter=visit_counter, counted_users=counted_users,
+    return render_template('home/newindex.html', online_users=online_users, new_users=new_users, featured=featured, featured_thread=featured_thread, tonline_users=tonline_users, counter=visit_counter, counted_users=counted_users,
                            nfeedback=nfeedback,
                            active_users=active_users,
                            total_blackjack_wins=total_blackjack_wins, total_numberspin_points=total_numberspin_points,
@@ -250,12 +269,12 @@ def index():
 @app.route('/oldpage')
 def old_page():
 
-    return render_template('index.html')
+    return render_template('home/index.html')
 
 @app.route('/games')
 def games():
     try:
-        with open('playergameinfo.json', 'r') as f:
+        with open(data_path('playergameinfo.json'), 'r') as f:
             playerinfo = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         playerinfo = []
@@ -270,10 +289,10 @@ def games():
                 'tblackjacks': 0
             }
             playerinfo.append(player)
-            with open('playergameinfo.json', 'w') as f:
+            with open(data_path('playergameinfo.json'), 'w') as f:
                 json.dump(playerinfo, f)
 
-    return render_template('games.html')
+    return render_template('games/games.html')
 
 
 @app.route('/reportSubmit', methods=['POST'])
@@ -283,7 +302,7 @@ def reportSubmit():
     feedback = request.form['message']
     aname = session.get('user')
     try:
-        with open('feedback.json', 'r') as f:
+        with open(data_path('feedback.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
@@ -297,11 +316,10 @@ def reportSubmit():
     if not name or not feedback:
         return redirect('/reportSubmit')
     entries.append(entry)
-    with open('feedback.json', 'w') as f:
+    with open(data_path('feedback.json'), 'w') as f:
         json.dump(entries, f)
     ctime = datetime.now().isoformat()
-    with open('notifications.json', 'r') as f:
-        notifications = json.load(f)
+    notifications = load_json('notifications.json', [])
     new_notification = {
         'id': str(uuid.uuid4()),
         'title': 'New feedback',
@@ -313,9 +331,9 @@ def reportSubmit():
     for entry in notifications:
         if entry['user'] == 'malcolm':
             entry['notifications'].append(new_notification)
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notifications, f)
-    return render_template('thanks.html')
+    return render_template('pages/thanks.html')
 
 @app.template_filter('format_time')
 def format_time(value):
@@ -324,4 +342,5 @@ def format_time(value):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    debug_mode = os.environ.get('FLASK_DEBUG', '0') == '1'
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)

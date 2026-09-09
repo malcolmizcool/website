@@ -6,7 +6,7 @@ import pytz
 import os
 import uuid
 from werkzeug.utils import secure_filename
-from helpers import get_achievements, award_achievement, get_flairs, calculate_level, xp_needed
+from helpers import load_json, get_achievements, award_achievement, get_flairs, calculate_level, xp_needed, data_path
 from models import User
 from extensions import db
 
@@ -16,10 +16,10 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('auth/register.html')
 @auth.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('auth/login.html')
 
 
 @auth.route('/bio/<username>')
@@ -34,7 +34,7 @@ def bio(username):
             db.session.commit()
         background_images = json.loads(db_user.unlocked_backgrounds or '[]')
         print(background_images)
-        return render_template('biopage.html', user=db_user, background_images=background_images)
+        return render_template('auth/biopage.html', user=db_user, background_images=background_images)
 
 @auth.route('/backgroundimage/<username>', methods=['GET', 'POST'])
 def change_background_image(username):
@@ -75,18 +75,15 @@ def profile(username):
 
     show_flairs = False
 
-    with open('playergameinfo.json', 'r') as f:
-        game_info = json.load(f)
+    game_info = load_json('playergameinfo.json', [])
     player_info = None
     for player in game_info:
         if player['user'] == username:
             player_info = player
             break
-    with open('achievement_list.json', 'r') as f:
-        alist = json.load(f)
+    alist = load_json('achievement_list.json', [])
     
-    with open('flair_list.json', 'r') as f:
-        flist = json.load(f)
+    flist = load_json('flair_list.json', [])
 
 
     if session.get('user') and session['user'] != username and username == "picklez_gaming":
@@ -101,8 +98,7 @@ def profile(username):
     percentage = (achieved_achievements/total_achievements)*100 if total_achievements else 0
     percentage = round(percentage, 2)
 
-    with open('spininfo.json', 'r') as f:
-        info = json.load(f)
+    info = load_json('spininfo.json', [])
     scores = [0]
     for i in info:
         if i['user'] == username:
@@ -133,7 +129,7 @@ def profile(username):
 
 
 
-    return render_template('newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs,
+    return render_template('auth/newprofile.html', user=user, username=username, player=player_info, achievements=user_achievements, achievement_list=alist, online=online, last_seen=last_seen, fraction=fraction, percentage=percentage, score=score, flair_list=flist, flairs=user_flairs, show_flairs=show_flairs,
                            pokeable=pokeable,
                            total_pokes=total_pokes, image=image,
                             user_level=user_level, level_xp=level_xp, user_xp_needed=user_xp_needed)
@@ -170,8 +166,7 @@ def createAccount():
     session['user'] = username
     session['role'] = new_user.role
 
-    with open('notifications.json', 'r') as f:
-        notifications = json.load(f)
+    notifications = load_json('notifications.json', [])
     
     new_entry = {
         "user": username,
@@ -180,7 +175,7 @@ def createAccount():
 
     notifications.append(new_entry)
 
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notifications, f)
 
     db.session.commit()
@@ -227,8 +222,7 @@ def poke(username):
         return("stop trying to cheat the system 🙄")
     if request.method == 'POST':
         poker = request.form['user']
-        with open('notifications.json', 'r') as f:
-            notifications = json.load(f)
+        notifications = load_json('notifications.json', [])
 
         for entry in notifications:
             if entry['user'] == username:
@@ -245,7 +239,7 @@ def poke(username):
             "type": None
         }
         user_notifications.append(new_notification)
-        with open('notifications.json', 'w') as f:
+        with open(data_path('notifications.json'), 'w') as f:
             json.dump(notifications, f)
         
         session[f'last_poke_{username}'] = datetime.now(pytz.timezone('Australia/Sydney')).isoformat()
@@ -261,22 +255,21 @@ def poke(username):
 
 @auth.route('/notifications')
 def show_notifications():
-    with open('notifications.json', 'r') as f:
-        notifications = json.load(f)
+    notifications = load_json('notifications.json', [])
     
     user = session.get('user')
     user_entry = []
     for entry in notifications:
         if entry['user'] == user:
             user_entry = entry
-    return render_template('notifications.html', entry=user_entry)
+    return render_template('auth/notifications.html', entry=user_entry)
 
 @auth.route('/notifications/delete', methods=['POST'])
 def delete_notification():
     notification_id = request.form['notification_id']
 
     try:
-        with open('notifications.json', 'r') as f:
+        with open(data_path('notifications.json'), 'r') as f:
             notifications = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         notifications = []
@@ -286,7 +279,7 @@ def delete_notification():
             n for n in entry['notifications'] if n['id'] != notification_id
         ]
 
-    with open('notifications.json', 'w') as f:
+    with open(data_path('notifications.json'), 'w') as f:
         json.dump(notifications, f)
 
     return redirect('/notifications')

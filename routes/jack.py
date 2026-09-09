@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, session
 import json
 import random
-from helpers import award_achievement
+from helpers import load_json, award_achievement, data_path
 from models import User
 
 suit_names = {'H': '♥', 'D': '♦', 'C': '♣', 'S': '♠'}
@@ -14,14 +14,13 @@ def format_card(card):
     return f"{value} {suit}"
 
 def update_player_stats(username, updates):
-    with open('playergameinfo.json', 'r') as f:
-        players = json.load(f)
+    players = load_json('playergameinfo.json', [])
     for player in players:
         if player['user'] == username:
             for key, value in updates.items():
                 player[key] = value
             break
-    with open('playergameinfo.json', 'w') as f:
+    with open(data_path('playergameinfo.json'), 'w') as f:
         json.dump(players, f)
 
 def dealer_play(game):
@@ -53,8 +52,7 @@ jack = Blueprint('jack', __name__)
 
 @jack.route("/blackjack")
 def blackjack():
-    with open('playergameinfo.json', 'r') as f:
-        info = json.load(f)
+    info = load_json('playergameinfo.json', [])
     db_users = User.query.all()
 
     plist = {}
@@ -66,7 +64,7 @@ def blackjack():
     leaderboard_wins = sorted(info, key=lambda p: p['bswins'], reverse=True)[:3]
     leaderboard_blackjacks = sorted(info, key=lambda p: p['tblackjacks'], reverse=True)[:3]
 
-    return render_template('blackjack.html', player=player, info=info, leaderboard_blackjacks=leaderboard_blackjacks, leaderboard_wins=leaderboard_wins, players=plist)
+    return render_template('games/blackjack.html', player=player, info=info, leaderboard_blackjacks=leaderboard_blackjacks, leaderboard_wins=leaderboard_wins, players=plist)
 
 @jack.route("/blackjack/solo")
 def singlejack():
@@ -89,14 +87,13 @@ def singlejack():
         game['dealer_hand'].extend([game['deck'].pop(), game['deck'].pop()])
         session['blackjacksolo'] = game
         if calculate_hand(game['hand']) == 21 and len(game['hand']) == 2:
-            with open('playergameinfo.json', 'r') as f:
-                players = json.load(f)
+            players = load_json('playergameinfo.json', [])
             if session.get('user'):
                 for player in players:
                     if player['user'] == session['user']:
                         player['tblackjacks'] += 1
                         break
-            with open('playergameinfo.json', 'w') as f:
+            with open(data_path('playergameinfo.json'), 'w') as f:
                 json.dump(players, f)
         session['blackjacksolo'] = game
     else:
@@ -111,10 +108,8 @@ def singlejack():
         bjack = True
 
         if session.get('user'):
-            with open('achievements.json', 'r') as f:
-                player_achievements = json.load(f)
-            with open('playergameinfo.json', 'r') as f:
-                game_info = json.load(f)
+            player_achievements = load_json('achievements.json', [])
+            game_info = load_json('playergameinfo.json', [])
             for entry in game_info:
                 if entry['user'] == session.get('user'):
                     if entry['tblackjacks'] == 21:
@@ -125,7 +120,7 @@ def singlejack():
     formatted_hand = [format_card(c) for c in game['hand']]
     formatted_dealer = [format_card(c) for c in game['dealer_hand']]
 
-    return render_template("blackjacksolo.html", game=game, hand=formatted_hand, dealer=formatted_dealer, bjack=bjack)
+    return render_template('games/blackjacksolo.html', game=game, hand=formatted_hand, dealer=formatted_dealer, bjack=bjack)
 
 @jack.route("/blackjack/hit")
 def hit():
@@ -154,8 +149,7 @@ def stand():
 
     if calculate_hand(game['dealer_hand']) < calculate_hand(game['hand']) <= 21:
         game['win'] = True
-        with open('playergameinfo.json', 'r') as f:
-            players = json.load(f)
+        players = load_json('playergameinfo.json', [])
         if session.get('user'):
             for player in players:
                 if player['user'] == session['user']:
@@ -163,7 +157,7 @@ def stand():
                     if player['bswins'] == 100:
                         award_achievement(session['user'], 'bj_100_wins')
                     break
-        with open('playergameinfo.json', 'w') as f:
+        with open(data_path('playergameinfo.json'), 'w') as f:
             json.dump(players, f)
 
     
@@ -172,8 +166,7 @@ def stand():
     
     if calculate_hand(game['dealer_hand']) > 21 and game['win'] != False:
         game['win'] = True
-        with open('playergameinfo.json', 'r') as f:
-            players = json.load(f)
+        players = load_json('playergameinfo.json', [])
         if session.get('user'):
             for player in players:
                 if player['user'] == session['user']:
@@ -181,7 +174,7 @@ def stand():
                     if player['bswins'] == 100:
                         award_achievement(session['user'], 'bj_100_wins')
                     break
-        with open('playergameinfo.json', 'w') as f:
+        with open(data_path('playergameinfo.json'), 'w') as f:
             json.dump(players, f)
 
     if calculate_hand(game['dealer_hand']) == calculate_hand(game['hand']):

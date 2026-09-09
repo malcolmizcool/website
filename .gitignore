@@ -1,21 +1,36 @@
-guestbook.json
-playergameinfo.json
-uandp.json
+# runtime data (user content / server state) - not tracked, lives in data/
+data/guestbook.json
+data/playergameinfo.json
+data/uandp.json
+data/blog.json
+data/feedback.json
+data/spininfo.json
+data/notifications.json
+data/counter.json
+data/announcements.json
+data/links.json
+data/ranks.json
+data/picklez_gaming.png
+
+# database
+site.db
+instance/
+
+# python
 __pycache__/
+*.pyc
+
+# env / secrets
+.env
+
+# misc project files
 test.txt
 colours.txt
-blog.json
-feedback.json
 colour.txt
-picklez_gaming.png
-spininfo.json
 questsplanning.txt
-.env
-instance/
-notifications.json
-counter.json
 backups/
 *.tar.gz
-announcements.json
-links.json
-ranks.json
+
+# OS junk
+.DS_Store
+._*

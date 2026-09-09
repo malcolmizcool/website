@@ -1,9 +1,36 @@
 import json
+import os
 from models import User
 from extensions import db
 from flask import session, redirect
 from functools import wraps
 
+# All runtime JSON data files (achievements, feedback, notifications, etc.)
+# live in this single folder instead of being scattered in the project root.
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+os.makedirs(DATA_DIR, exist_ok=True)
+
+
+def data_path(filename):
+    """Resolve a data filename (e.g. 'feedback.json') to its real path in data/."""
+    return os.path.join(DATA_DIR, filename)
+
+
+def load_json(filename, default):
+    """Read a JSON file from data/, returning `default` if it's missing or empty/corrupt.
+    This is what keeps a fresh clone/deploy from crashing just because a
+    gitignored data file hasn't been created yet."""
+    try:
+        with open(data_path(filename), 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return default
+
+
+def save_json(filename, data):
+    """Write a JSON file to data/."""
+    with open(data_path(filename), 'w') as f:
+        json.dump(data, f)
 
 
 def require_admin(f):
@@ -23,7 +50,7 @@ def require_admin(f):
 
 def get_achievements(username):
     try:
-        with open('achievements.json', 'r') as f:
+        with open(data_path('achievements.json'), 'r') as f:
             achievements = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         achievements = []
@@ -33,7 +60,7 @@ def get_achievements(username):
     if user_achievements is None:
         user_achievements = {'user': username, 'achievements': []}
         achievements.append(user_achievements)
-        with open('achievements.json', 'w') as f:
+        with open(data_path('achievements.json'), 'w') as f:
             json.dump(achievements, f)
 
     return user_achievements
@@ -41,7 +68,7 @@ def get_achievements(username):
 
 def get_flairs(username):
     try:
-        with open('flairs.json', 'r') as f:
+        with open(data_path('flairs.json'), 'r') as f:
             flairs = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         flairs = []
@@ -51,20 +78,20 @@ def get_flairs(username):
     if user_flairs is None:
         user_flairs = {'user': username, 'flairs': []}
         flairs.append(user_flairs)
-        with open('flairs.json', 'w') as f:
+        with open(data_path('flairs.json'), 'w') as f:
             json.dump(flairs, f)
 
     return user_flairs
 
 def award_achievement(user, achievement_id):
     try:
-        with open('achievements.json', 'r') as f:
+        with open(data_path('achievements.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
     
     try:
-        with open('achievement_list.json', 'r') as f:
+        with open(data_path('achievement_list.json'), 'r') as f:
             achievements = json.load(f)
     except FileNotFoundError:
         achievements = []
@@ -120,12 +147,12 @@ def award_achievement(user, achievement_id):
         db.session.commit()
 
     
-    with open('achievements.json', 'w') as f:
+    with open(data_path('achievements.json'), 'w') as f:
         json.dump(entries, f)
     
 def award_flair(user, achievement_id):
     try:
-        with open('flairs.json', 'r') as f:
+        with open(data_path('flairs.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
@@ -145,7 +172,7 @@ def award_flair(user, achievement_id):
             "flairs": [achievement_id]
         })
     
-    with open('flairs.json', 'w') as f:
+    with open(data_path('flairs.json'), 'w') as f:
         json.dump(entries, f)
 
 def xp_needed(level):

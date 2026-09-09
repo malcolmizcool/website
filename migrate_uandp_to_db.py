@@ -11,9 +11,10 @@ import json
 from app import app
 from extensions import db
 from models import User
+from helpers import data_path
 
 with app.app_context():
-    with open('uandp.json', 'r') as f:
+    with open(data_path('uandp.json'), 'r') as f:
         users = json.load(f)
 
     created = 0

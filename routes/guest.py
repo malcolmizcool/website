@@ -3,13 +3,14 @@ from datetime import datetime, timedelta
 import pytz
 import json
 from models import User
+from helpers import data_path
 
 guest = Blueprint('guest', __name__)
 
 @guest.route('/guest')
 def guest_page():
     try:
-        with open('guestbook.json', 'r') as f:
+        with open(data_path('guestbook.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
@@ -25,22 +26,22 @@ def guest_page():
         online_status[user.user] = status
 
     current_user = session.get('user')
-    return render_template('guest.html', entries=entries, users=db_users, roles=roles, online_status=online_status, current_user=current_user)
+    return render_template('guestbook/guest.html', entries=entries, users=db_users, roles=roles, online_status=online_status, current_user=current_user)
 
 @guest.route('/sign')
 def sign():
-    return render_template('sign.html')
+    return render_template('guestbook/sign.html')
 
 @guest.route('/deleteGuestEntry', methods=['POST'])
 def deleteGuestEntry():
     entry = request.form['index']
     try:
-        with open('guestbook.json', 'r') as f:
+        with open(data_path('guestbook.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         return f"no guestbook. <a href={"/"}><button>Return Home</button></a>"
     del entries[int(entry)]
-    with open('guestbook.json', 'w') as f:
+    with open(data_path('guestbook.json'), 'w') as f:
         json.dump(entries, f)
     return redirect('/guest')
 
@@ -49,7 +50,7 @@ def process():
     name = session.get('user')
     comment = request.form['message']
     try:
-        with open('guestbook.json', 'r') as f:
+        with open(data_path('guestbook.json'), 'r') as f:
             entries = json.load(f)
     except FileNotFoundError:
         entries = []
@@ -62,7 +63,7 @@ def process():
     if not name or not comment:
         return redirect('/sign')
     entries.insert(0, entry)
-    with open('guestbook.json', 'w') as f:
+    with open(data_path('guestbook.json'), 'w') as f:
         json.dump(entries, f)
 
     return redirect('/guest')

@@ -1,0 +1,42 @@
+    {% extends "base.html" %}
+    {% block title %}Blackjack{% endblock %}
+    {% block content %}
+    <h3>Blackjack</h3>
+    Welcome to Blackjack! <br> 
+    There aren't any rules here because you should know how to play this game lol. <br> <br>
+    <hr>
+    <b>Your Stats:</b>
+    <br>
+    {% if session.get('user') %}
+        {% if player %}
+            Total Single player wins: {{ player.bswins }} <br>
+            Total Blackjacks: {{ player.tblackjacks }}
+        {% endif %}
+    {% else %}
+        <a href="/login"><button class="buttonthing">Login</button></a> for your stats.
+    {% endif %}
+    <br> <br>
+    <b>Leaderboard:</b> 
+   <div style="display: flex; gap: 50px;">
+
+    <div>
+    Total Solo Wins: <br>
+    {% for wins in leaderboard_wins %}
+    <a href="/profile/{{ wins['user'] }}" style="text-decoration: none;"><span class="role-{{ players[wins['user']] }}">{{ wins['user'] }}</span></a>: {{ wins['bswins'] }} <br>
+    {% endfor %}
+    </div>
+    <div>
+        Total Blackjacks: <br>
+        {% for blackjacks in leaderboard_blackjacks %}
+        <a href="/profile/{{ blackjacks['user'] }}" style="text-decoration: none;"><span class="role-{{ players[blackjacks['user']] }}">{{ blackjacks['user'] }}</span></a>: {{ blackjacks['tblackjacks'] }} <br>
+        {% endfor %}
+    </div>
+   </div>
+   <hr>
+
+    <br>
+    <br>
+    <div class="blackjackButtons">
+        <a href="/blackjack/solo"><button class="buttonthing">Single player</button> </a><button disabled>Multiplayer</button>
+    </div>
+    {% endblock %}

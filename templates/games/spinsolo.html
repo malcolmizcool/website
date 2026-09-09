@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Numberspin{% endblock %}
+{% block content %}
+
+{% if session.get('user') %}
+    <div style="display: flex; justify-content: center;">
+
+        <div>
+            Remaining numbers: <br>
+            <table class="game-table">
+                <tr>
+                    <th>Number</th>
+                    <th>Points</th>
+                </tr>
+                {% for n in range(1, 14) %}
+                <tr>
+                    <td>
+                        {% if n not in session['spinsolo']['remaining_numbers'] %}
+                        <span style="color: red;">{{ n }}</span>
+                        {% else %}
+                        {{ n }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if n not in session['spinsolo']['remaining_numbers'] %}
+                        <span style="color: red;">{{ (n * session['spinsolo']['multiplier']) | round(0) | int }}</span>
+                        {% else %}
+                        {{ (n * session['spinsolo']['multiplier']) | round(0) | int }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div style="display: flex; justify-content: center; flex-direction: column; align-items: center; margin: 15px;">
+            <div>
+                <b>Round:</b> {{ session['spinsolo']['round'] }}
+            </div>
+
+            <div style="padding: 10px; margin: 10;">
+                <b>Multiplier:</b> {{ session['spinsolo']['multiplier'] }}×
+            </div>
+
+            <div style="border: 1px solid rgb(0, 0, 0); padding: 10px; text-align: center;">
+            {{ session['spinsolo']['chosen_number'] }}  <br> <br>
+            {% if session['spinsolo']['buttons'] %}
+            <div><a href="/numberspin/solo/higher"><button>Higher</button></a> <a href="/numberspin/solo/lower"><button>Lower</button></a> <br><span style="padding: 3px;"><a href="/numberspin/solo/end"><button>Stand</button></a></span> </div> </div> <br><br>
+            {% else %}
+            <div><a href="/numberspin/solo/higher"><button disabled>Higher</button></a> <a href="/numberspin/solo/lower"><button disabled>Lower</button></a> <br><span style="padding: 3px;"><a><button disabled>Stand</button></a></span> </div> </div> <br><br>
+            {% endif %}
+            <div style="display: flex; justify-content: center; flex-direction: column; align-items: center; margin: 5px;">
+                {% if session['spinsolo']['state'] == 'win' %}
+                You ended with a score of {{ session['spinsolo']['score'] }}. <br>
+                <a href="/numberspin/solo/new"><button>New game</button></a>
+                {% elif session['spinsolo']['state'] == 'loss' %}
+                Game over. <br>
+                <a href="/numberspin/solo/new"><button>New game</button></a>
+                {% endif %}
+            </div>
+            <div style="border: 1px solid black; padding: 10px; text-align: center;">
+                <b>Score:</b> <br>
+                {{ session['spinsolo']['score'] }}
+            </div>
+        </div>
+        
+
+
+
+
+    </div>
+
+{% else %}
+please login to play
+{% endif %}
+
+{% endblock %}

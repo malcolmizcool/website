@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<div style="display: flex; justify-content: center;">
+<div>
+<table>
+<tr class="table_heading_background"><td class="table_heading_text"><b>Update Bio</b> </td></tr>
+<tr>
+    <td>
+        <form action="/bio/{{ session.get('user') }}/change" method="POST">
+            <label for="bio">New bio:</label>
+            <textarea type="text" id="bio" name="bio" rows="4" cols="50"></textarea> <br> <br>
+            <input type="submit" class="buttonthing">
+        </form>
+    </td>
+</tr>
+</table>
+{% if background_images %}
+<table>
+    <tr class="table_heading_background"><td class="table_heading_text"><b>Profile Background</b></td></tr>
+    <tr><td>
+        <div style="display: grid; grid-template-columns: repeat(3, 80px); gap: 6px; padding: 4px;">
+            {% for image in background_images %}
+            <form action="/backgroundimage/{{ session.get('user') }}" method="POST">
+                <input type="hidden" name="source" value="{{ image }}">
+                <input type="image" name="image" src="/static/assets/{{ image }}"
+                    style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid transparent; image-rendering: pixelated;"
+                    onmouseover="this.style.borderColor='#6aa888'"
+                    onmouseout="this.style.borderColor='transparent'">
+            </form>
+            {% endfor %}
+
+        </div>
+    </td></tr>
+</table>
+{% endif %}
+</div>
+    <div style="align-self: flex-start;">
+        <table>
+            <tr class="table_heading_background"><td class="table_heading_text"><b>Change Profile Picture</b></td></tr>
+            <tr><td>    <form action="/profile/{{ session.get('user') }}/uploadpfp" method="POST" enctype="multipart/form-data">
+        <input type="file" name="pfp" accept="image/*" > <br>
+        <input type="submit" value="Upload" class="buttonthing">
+        </form></td></tr>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
