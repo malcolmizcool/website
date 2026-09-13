@@ -5,3 +5,4 @@ markdown
 bleach
 pymdown-extensions
 Flask-Migrate
+flask-socketio
