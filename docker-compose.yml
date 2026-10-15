@@ -12,12 +12,16 @@ services:
 
   backup:
     image: offen/docker-volume-backup:v2
-    container_name: website_backup
+    container_name: website-backup
     volumes:
       - .:/backup/the_slab:ro
-      - /mnt/mediadrive/backups:/archive
+      - /media/myfiles/backups:/archive
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
       - BACKUP_CRON_EXPRESSION=0 2 * * *
       - BACKUP_RETENTION_DAYS=14
+      - BACKUP_PRUNING_PREFIX=the-slab-backup-   # only ever prune these files
+      - BACKUP_EXCLUDE_REGEXP=/\.git/|/\._[^/]*$$|\.DS_Store$$|__pycache__/|\.swp$$
       - BACKUP_FILENAME=the-slab-backup-%Y-%m-%dT%H-%M-%S.tar.gz
     restart: unless-stopped
