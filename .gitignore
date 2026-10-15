@@ -11,6 +11,8 @@ data/announcements.json
 data/links.json
 data/ranks.json
 data/picklez_gaming.png
+data/achievements.json
+data/flairs.json
 
 # database
 site.db
