@@ -43,7 +43,7 @@ def createBlogPost():
         "date": date
     }
     blogs.insert(0, blogpost)
-    with open ('blog.json', 'w') as f:
+    with open(data_path('blog.json'), 'w') as f:
         json.dump(blogs, f)
     return redirect('/blog')
 

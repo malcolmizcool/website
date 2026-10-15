@@ -142,7 +142,7 @@ def reply(board, thread_id):
 
     time = datetime.now().isoformat()
 
-    with open ('notifications.json', 'r') as f:
+    with open(data_path('notifications.json'), 'r') as f:
         notification_entries = json.load(f)
     
 
