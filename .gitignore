@@ -36,3 +36,4 @@ backups/
 # OS junk
 .DS_Store
 ._*
+.vscode

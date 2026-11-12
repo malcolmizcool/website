@@ -22,6 +22,7 @@ from routes.admin import admin
 from routes.luck import luck
 from routes.forum import forum
 from helpers import load_json, data_path
+from routes.minecraft import minecraft
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback-dev-key')
@@ -40,6 +41,7 @@ app.register_blueprint(jack)
 app.register_blueprint(admin)
 app.register_blueprint(luck)
 app.register_blueprint(forum)
+app.register_blueprint(minecraft)
 
 # --- First-run database setup ---------------------------------------------
 # Our oldest Alembic migration only ALTERs existing tables; it assumes
